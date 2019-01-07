@@ -1,0 +1,80 @@
+{include file="public/_meta" /}
+<title>操作记录</title>
+<style>
+	input{
+		border:none;
+	}
+</style>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 系统管理 <span class="c-gray en">&gt;</span> 操作记录 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<!-- <div class="text-c"> 
+		<input type="text" class="input-text" style="width:250px" placeholder="输入用户名称" id="" name="us_name">
+		<button type="submit" class="btn btn-success" name=""><i class="Hui-iconfont">&#xe665;</i>搜用户</button>
+	</div> -->
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="r">共有数据：<strong>{$list->total()}</strong> 条</span> </div>
+	<table class="table table-border table-bordered table-bg">
+		<thead>
+			<tr>
+				<th scope="col" colspan="9">操作记录</th>
+			</tr>
+			<tr class="text-c">
+				<th width="150">用户名</th>
+				<th width="150">操作说明</th>
+				<th width="150">时间</th>
+			</tr>
+		</thead>
+		<tbody>
+			{volist name='list' id="vo"}
+			<tr class="text-c">
+				<td>{$vo.aid_text}</td>
+				<td>{$vo.note}</td>
+				<td>{$vo.add_time}</td>
+			</tr>
+			{/volist}
+		</tbody>
+	</table>
+	<div class="pages" style="margin:20px;float: right; ">{$list->render()}</div>	
+</div>
+{include file="public/_footer" /}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/static/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script> 
+<script type="text/javascript" src="/static/admin/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+<script type="text/javascript" src="/static/admin/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+ 	function edit(id,data){
+ 		console.log(id);
+ 		var	val=$(data).val();
+ 		console.log(val);
+    	$.ajax({
+    		type:"post",
+    		url:"{:url('compo')}",
+    		data:{id:id,val:val},
+    		success:function(data){
+    		}
+    	})
+    }
+    //改变
+	function issue(id,value,key){
+		layer.confirm('确定要发放么？', {
+	      btn: ['确定', '取消']
+	    }, function(index, layero){
+	        $.ajax({
+	            type: "post",
+	            url: "{:url('change')}",
+	            data: {id:id,value:value,key:key},
+	            success: function(data) {
+	                layer.msg(data.msg);
+	                if(data.code=='1'){
+	                    setTimeout(function(){
+	                        location.href = data.url;
+	                    },1000);
+	                }
+	            }
+	        });
+	    });
+	}
+</script>
+</body>
+</html>

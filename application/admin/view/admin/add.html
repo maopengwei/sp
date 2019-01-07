@@ -1,0 +1,72 @@
+{include file="public/_meta" /}
+<title></title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+</head>
+
+<body>
+     <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>管理列表 <span class="c-gray en">&gt;</span> 添加管理员 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <article class="page-container">
+        <form class="form form-horizontal" id="form-admin-add">
+            <input type="hidden" name="__token__" value="{$Request.token}" />
+             <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>账号：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="{$info.ad_account|default=''}" name="ad_account" style="width:20%">
+                </div>
+            </div>
+             <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>真实姓名：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="{$info.ad_real_name|default=''}" name="ad_real_name" style="width:20%">
+                </div>
+            </div>
+             <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>登录密码：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" id="phone" name="ad_pwd" style="width:20%">
+                </div>
+            </div>
+             <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>手机号码：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="{$info.ad_tel|default=''}" placeholder="" name="ad_tel" style="width:20%">
+                </div>
+            </div>
+                    
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                    <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" onclick="return add()">
+                </div>
+            </div>
+        </form>
+    </article>
+    {include file="public/_footer"/}
+    <!--请在下方写此页面业务相关的脚本-->
+ 
+    <script type="text/javascript">
+
+    $(function(){
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+        var roles = {$info.role_id|default="1"};
+        $('select[name="role_id"]').val(roles);
+    });
+    function add(){
+        $.post("{:url('add')}", $('form').serialize()).success(function(data) {
+            layer.msg(data.msg);
+            if (data.code) {
+                setTimeout(function() {
+                   location.href = '';
+                }, 500);
+            }
+        });
+        return false;
+    }
+    </script>
+</body>
+
+</html>

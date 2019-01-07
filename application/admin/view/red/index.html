@@ -1,0 +1,85 @@
+{include file="public/_meta" /}
+<link href="/static/admin/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 
+        <span class="c-gray en">&gt;</span>用户管理 
+        <span class="c-gray en">&gt;</span> 添加红包 
+        <a class="btn btn-success radius r" style="margin-left:2px" href="javascript:location.replace(location.href);" title="刷新" >
+            <i class="Hui-iconfont">&#xe68f;</i>
+        </a>
+    </nav>
+<div class="page-container">
+    <form class="form form-horizontal" id="form-article-add">
+        
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>选择人员：</label>
+            <div class="formControls col-xs-8 col-sm-9"> 
+                <span class="select-box" style="width:20%">
+                    <select name="type" class="select">
+                        <option value="0">所有人</option>
+                        <option value="1">单个人</option>
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">账户名：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" name="us_account" class="input-text" style="width:20%">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">手机号（核对账户）：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" name="us_tel" class="input-text" style="width:20%">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">添加次数：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="number" class="input-text" name="time" style="width:20%">
+            </div>
+        </div>
+        
+        
+        
+        <!-- <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>安全密码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="us_safe_pwd" style="width:20%">
+            </div>
+        </div> -->
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <button onclick="return add();" class="btn btn-primary radius" type="submit">
+                    <i class="Hui-iconfont">&#xe632;</i>确认提交
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="public/_footer" /}
+
+<!--请在下方写此页面业务相关的脚本-->
+
+<script type="text/javascript">
+function add(){
+    $('button').attr('onclick','return false');
+    $.post('{:url("index")}',$('#form-article-add').serialize()).success(function(data){
+        layer.msg(data.msg);
+        if(data.code){
+            setTimeout(function(){
+                location.href = '';
+            },1000);
+        }else{
+            $('button').attr('onclick','return add()');
+        }
+    });
+    return false;
+}
+
+</script>
+</body>
+</html>

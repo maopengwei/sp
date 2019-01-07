@@ -1,0 +1,83 @@
+{include file="public/_meta" /}
+<title></title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+</head>
+
+<body>
+    <article class="page-container">
+        <form class="form form-horizontal" id="form-admin-add">
+            <input type="text" class="hidden" name="id" value="{$info.id|default=''}">
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>工号：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="{$info.ad_work_number|default=''}" style="width:20%" readonly>
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>账号：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="{$info.ad_account|default=''}" style="width:20%" name="ad_account">
+                </div>
+            </div>
+             <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>手机号：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="{$info.ad_tel|default=''}" name="ad_tel" style="width:20%">
+                </div>
+            </div>
+             <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>真实姓名：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="{$info.ad_real_name|default=''}" name="ad_real_name" style="width:20%">
+                </div>
+            </div>
+             <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>登录密码：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" id="phone" name="ad_pwd" style="width:20%">
+                </div>
+            </div>
+             <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>入职日期：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="{$info.ad_add_time|default=''}" style="width:20%" readonly>
+                </div>
+            </div>        
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                    <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" onclick="return add()">
+                </div>
+            </div>
+        </form>
+    </article>
+    {include file="public/_footer"/}
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+    <script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+    <script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+    <script type="text/javascript">
+
+    $(function(){
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+    });
+    function add(){
+        $.post("{:url('edit')}", $('form').serialize()).success(function(data) {
+            layer.msg(data.msg);
+            if (data.code) {
+                setTimeout(function() {
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                }, 500);
+            }
+        });
+        return false;
+    }
+    </script>
+</body>
+
+</html>

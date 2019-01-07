@@ -1,0 +1,217 @@
+
+{include file="public/_meta" /}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+<style type="text/css">
+    body, html,#allmap {width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
+    </style>
+</head>
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>门店管理 <span class="c-gray en">&gt;</span> 添加门店 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="page-container">
+        <div id="allmap" style="height: 80vh;"></div>
+        <form class="form form-horizontal" id="form-article-add">
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">经度：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" placeholder="经度" name="addr_longitude" value="{$info.addr_longitude}" style="width:20%">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">纬度：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" placeholder="维度" name="addr_latitude" value="{$info.addr_latitude}" style="width:20%">
+                </div>
+            </div>
+             <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">地址：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" placeholder="地址" name="addr_addr" value="{$info.addr_addr}" style="width:60%">
+                </div>
+            </div>
+             <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">详细信息：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" placeholder="街道信息" name="addr_detail" value="{$info.addr_detail}" style="width:50%">
+                </div>
+            </div>
+            <div style="display:none;">
+                <input type="text" name="id" value="{$info.id}">
+            </div>
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                    <button onclick="return xiugai();" class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 确认提交</button>
+                </div>
+            </div>
+            <div>
+                
+            </div>
+        </form>
+    </div>
+    {include file="public/_footer" /}
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=t0j1OSuCs9SUaq3HNoq7Gb7vvRiSBjoV"></script>
+    <script type="text/javascript">
+        
+        var a = {$info.addr_longitude};
+        var b = {$info.addr_latitude};
+        var map = new BMap.Map("allmap"); // 创建地图实例
+        var point = new BMap.Point(a, b); // 创建点坐标
+        map.centerAndZoom(point, 15); // 初始化地图，设置中心点坐标和地图级别
+               
+        //单击获取点击的经纬度
+        map.addEventListener("click",function(e){
+            console.log(e.point.lng,e.point.lat);
+            $('input[name="addr_longitude"]').val(e.point.lng);
+            $('input[name="addr_latitude"]').val(e.point.lat);
+            // alert(e.point.lng + "," + e.point.lat);
+        });
+        var us_id = {$info.us_id};
+        console.log(us_id);
+        function aa(){
+            $.ajax({
+                type:"post",
+                url:"{:url('position')}",
+                data:{us_id:us_id},
+                success:function(data){
+                    showBusiness_hall(data);
+                }
+            })
+        }
+        aa();
+        //地图上创建自定义覆盖物，显示信息  
+        function showBusiness_hall(markerArr){  //marjerArr为数据库查询的数据 
+            // console.log(markerArr);return;
+            // 创建图标对象  
+            // var hall = "/static/img"
+            // var myIcon = new BMap.Icon(hall, new BMap.Size(36, 40), {//是引用图标的名字以及大小，注意大小要一样，hall：表示图片  
+            //     anchor: new BMap.Size(10, 30)//这句表示图片相对于所加的点的位置  
+            // });  
+            var point = new Array(); //存放标注点经纬信息的数组      
+            var marker = new Array(); //存放标注点对象的数组      
+            for (var i = 0; i < markerArr.length; i++){  
+                 var p0 = markerArr[i].addr_longitude; //      
+                 var p1 = markerArr[i].addr_latitude; //按照原数组的point格式将地图点坐标的经纬度分别提出来      
+                 var addr = markerArr[i].addr_addr;//收货地址  
+                 var detail = markerArr[i].addr_detail;//收货地址  
+                 var mobile = markerArr[i].addr_tel;//收货人手机号  
+                 var consignee = markerArr[i].addr_consignee;//收货人  
+                 point[i] = new window.BMap.Point(p0, p1); //循环生成新的地图点     
+                 marker[i] = new window.BMap.Marker(point[i]); //按照地图点坐标生成标记    
+                 var label = new BMap.Label(p0+p1,{offset:new BMap.Size(20,-10)});//设置lable标签  
+                 map.addOverlay(marker[i]); //地图上呈现标记   
+                 // marker[i].setIcon(myIcon);//放图标  
+                 marker[i].setLabel(label);  
+                 label.setStyle({    //给label设置样式，任意的CSS都是可以的  
+                          display:"none"  
+                      });  
+                 var content = 
+                 		"<p style=’font-size:12px;lineheight:1.8em;’>收货人："+consignee+ 
+                 		"</br>收货人手机："+mobile+ 
+                 		"</br>地址：" + addr +
+                 		"</br>街道信息：" + detail +
+                 		"</p>";  
+                 addClickHandler(content,marker[i]);//添加监听事件  
+            }  
+        }
+
+        /**  
+         * 添加监听事件  
+         */  
+        function addClickHandler(content,marker){  
+            marker.addEventListener("mouseover",function(e){  
+                openInfo(content,e)  
+            });  
+        }
+        /**  
+         * 创建信息窗口  
+         */  
+        function openInfo(content,e){  
+            var opts = {    
+                    width: 150, //信息窗口宽度    
+                    height: 150, //信息窗口高度    
+                }  
+            var p = e.target;  
+            var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);  
+            var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象   
+            map.openInfoWindow(infoWindow,point); //开启信息窗口  
+        }
+
+
+        // 编写自定义函数,创建标注
+        function addMarker(point){
+            var marker = new BMap.Marker(point);
+            marker.addEventListener("click",attribute);
+            map.addOverlay(marker);
+        }
+    
+        // function attribute(e){
+        //     console.log(e.a);
+        //     console.log(123);
+        //     console.log(dada);
+        //     // var p = marker.getPosition();  //获取marker的位置
+        //     // alert("marker的位置是" + p.lng + "," + p.lat);    
+        // }
+       
+        function xiugai() {
+            $.post('{:url("addr_edit")}', $('#form-article-add').serialize()).success(function(data) {
+                layer.msg(data.msg);
+                if (data.code) {
+                    setTimeout(function() {
+                        location.href = '';
+                    }, 1000);
+                }
+            });
+            return false;
+        }
+
+        //控件添加
+         // 添加带有定位的导航控件
+          var navigationControl = new BMap.NavigationControl({
+            // 靠左上角位置
+            anchor: BMAP_ANCHOR_TOP_LEFT,
+            // LARGE类型
+            type: BMAP_NAVIGATION_CONTROL_LARGE,
+            // 启用显示定位
+            enableGeolocation: true
+          });
+          map.addControl(navigationControl);
+          // var geolocationControl = new BMap.GeolocationControl();
+          // geolocationControl.addEventListener("locationSuccess", function(e){
+          //   console.log(1);
+          //   // 定位成功事件
+          //   var address = '';
+          //   address += e.addressComponent.province;
+          //   address += e.addressComponent.city;
+          //   address += e.addressComponent.district;
+          //   address += e.addressComponent.street;
+          //   address += e.addressComponent.streetNumber;
+          //   console.log(address);
+          //   alert("当前定位地址为：" + address);
+          // });
+          // geolocationControl.addEventListener("locationError",function(e){
+          //    console.log(2);
+          //   // 定位失败事件
+          //   alert(e.message);
+          // });
+          // console.log(3);
+          // map.addControl(geolocationControl);
+          // 
+          // 百度地图API功能
+
+        var geoc = new BMap.Geocoder();    
+
+        map.addEventListener("click", function(e){        
+            var pt = e.point;
+            geoc.getLocation(pt, function(rs){
+                var addComp = rs.addressComponents;
+                var address = addComp.province+addComp.city+addComp.district+addComp.street+addComp.streetNumber;
+                $('input[name="addr_addr"]').val(address);
+                console.log(addComp);
+                // alert(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
+            });        
+        });
+    </script>
+</body>
+
+</html>

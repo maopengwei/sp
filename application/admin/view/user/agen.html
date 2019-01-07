@@ -1,0 +1,141 @@
+{include file="public/_meta" /}
+<link href="/static/admin/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 
+    	<span class="c-gray en">&gt;</span>用户管理 
+    	<span class="c-gray en">&gt;</span> 添加区代理
+    	<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" >
+    		<i class="Hui-iconfont">&#xe68f;</i>
+    	</a>
+    </nav>
+<div class="page-container">
+    <form class="form form-horizontal" id="form-article-add">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">账户名</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" disabled class="input-text" placeholder="用户账户名" name="us_account" value="{$info.user.us_account}" style="width:30%">
+            </div>
+        </div>
+        <input type="hidden" name="id" value="{$info.id}">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">地址：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="age_area" value="{$info.age_area}" placeholder="区代理位置">
+            </div>
+        </div>
+         <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">联系电话：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="age_tel" value="{$info.age_tel}" style="width:20%">
+            </div>
+        </div>
+         <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">联系人：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="age_name" value="{$info.age_name}" style="width:20%">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">区代图片(2:1)：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <div style="width:110px;height: 110px;position: relative;display: inline-block; ">
+                    {if condition="$info.age_pic"}
+                        <img src="{$info.age_pic}" class="logo" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;">
+                    {else}
+                        <img src="/static/admin/img/add0.png" class="logo" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;">
+                    {/if}
+                    <input type="file" name="file" onchange="aaa($(this))" class="input-text" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;opacity: 0;">
+                </div>
+            </div>
+        </div>
+        <div class="row cl" style="display:none">
+            <input type="hidden" name="age_pic" value="">
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <button onclick="return add();" class="btn btn-primary radius" type="submit">
+                    <i class="Hui-iconfont">&#xe632;</i>确认修改
+                </button>
+
+                <button onclick="return eee();" class="btn btn-primary radius" type="submit">
+                    <i class="Hui-iconfont">&#xe632;</i>删除区代
+                </button>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="public/_footer" /}
+
+<!--请在下方写此页面业务相关的脚本-->
+
+<script type="text/javascript">
+function add(){
+    $('button').attr('onclick','return false');
+    $.post('{:url("agen")}',$('#form-article-add').serialize()).success(function(data){
+        layer.msg(data.msg);
+        if(data.code){
+            setTimeout(function(){
+                location.href = '';
+            },1000);
+        }else{
+            $('button').attr('onclick','return add()');
+        }
+    });
+    return false;
+}
+/*------------------删除*/
+function eee(){
+	var id = "{$info['id']}";
+    layer.confirm('确定要删除该区域代理么？', {
+      btn: ['确定', '取消']
+    }, function(index, layero){
+        $.ajax({
+            type: "post",
+            url: "{:url('age_del')}",
+            data: {id:id},
+            success: function(data) {
+                layer.msg(data.msg);
+                if(data.code==1){
+                    setTimeout(function(){
+                        location.href = data.url;
+                    },1000);
+                }
+            }
+        });
+    });
+    return false;
+}
+
+function aaa(dada) {
+    var data = new FormData();
+    data.append('file', dada[0].files[0]);
+    var index = layer.load(1, { shade: false }); //0代表加载的风格，支持0-2
+    $.ajax({
+        url: '{:url("store/upload")}',
+        type: 'POST',
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(data) {
+            layer.msg(data.msg);
+            if (data.code) {
+                $('.logo').attr('src',data.data);
+                $('input[name="age_pic"]').val(data.data);
+            }
+            layer.close(index);
+        },
+        error: function() {
+            layer.close(index);
+            layer.msg('上传出错');
+        }
+    });
+}
+
+
+</script>
+</body>
+</html>

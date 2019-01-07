@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>唤起微信</title>
+</head>
+<style>
+	.ss{
+		width: 300px;
+		height: 100px;
+		line-height: 100px;
+		font-size: 60px;
+		background-color: lightblue;
+		border: 0;
+		outline: 0
+	}
+</style>
+<body>
+	<!-- <a href="javascript:window.location.href='weixin://'">微信分享</a> -->
+	<button class="ss" onclick="ccc()">asas</button>
+</body>
+</html>
+<!-- <script	src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script> -->
+<script>
+	// var url = window.location.href.replace(window.location.hash, "");
+	// console.log(url);
+	var ticket = '{$ticket}';
+	console.log(ticket);
+	/*
+	var url = '$url';
+	var appId = '$appId';
+	var timestamp = '$timestamp';
+	var nonceStr = "$nonceStr";
+	var signature = '$signature';
+
+	wx.config({
+	    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+	    appId: appId, // 必填，公众号的唯一标识
+	    timestamp: timestamp, // 必填，生成签名的时间戳
+	    nonceStr: nonceStr, // 必填，生成签名的随机串
+	    signature: signature,// 必填，签名
+	    jsApiList: ['updateAppMessageShareData','updateTimelineShareData'], // 必填，需要使用的JS接口列表
+	});
+	wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+	    wx.updateAppMessageShareData({ 
+	        title: 'maomao', // 分享标题
+	        desc: '中国人', // 分享描述
+	        link: url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+	        imgUrl: '/static/mobile/img/weixin.png', // 分享图标
+	        success: function () {
+	          alert('分享成功');
+	        }
+		});
+	});
+	
+	console.log(appId);
+	console.log(timestamp);
+	console.log(nonceStr);
+	console.log(signature);
+	
+*/
+	
+
+	function ccc(){
+		if(isWeiXin()){
+			alert('左上角');
+		}else{
+			loaciton.href="weixin://dl/business/?ticket=t7ac579f071faadbce4c31fca854b3e59";
+			// location.href="weixin://dl/businessWebview/link/?appid=wxb20718414ac499a5#wechat_redirect";
+
+			// location.href="weixin://dl/business/?ticket=t286ae05023e373f6c18d1c7f84f00bdc#wechat_redirect#wechat_redirect";
+			// location.href='weixin://dl/business/?ticket=http://admin.yahoosp.cn/index/index/wechat'
+			// location.href="weixin://";
+		}
+		// wx.updateAppMessageShareData();
+	}	
+	function isWeiXin(){
+	  //window.navigator.userAgent属性包含了浏览器类型、版本、操作系统类型、浏览器引擎类型等信息，这个属性可以用来判断浏览器类型
+	  var ua = window.navigator.userAgent.toLowerCase();
+	  //通过正则表达式匹配ua中是否含有MicroMessenger字符串
+	  if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+	  	return true;
+	  }else{
+	  	return false;
+	  }
+	}
+	
+
+	// function ccc(){
+	// 	console.log(12);
+	// 	wx.updateAppMessageShareData({ 
+	//         title: 'maomao', // 分享标题
+	//         desc: 'maomao', // 分享描述
+	//         link: 'http://www.baidu.com', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+	//         imgUrl: '', // 分享图标
+	//         success: function () {
+	//           // 设置成功
+	//         }});
+	// }
+
+
+		// wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+		//     wx.updateAppMessageShareData({ 
+		//         title: '', // 分享标题
+		//         desc: '', // 分享描述
+		//         link: '', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+		//         imgUrl: '', // 分享图标
+		//         success: function () {
+		//           // 设置成功
+		//         }
+		// });
+		
+		// wx.checkJsApi({
+		// 		jsApiList: ['chooseImage'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+		// 		success: function(res) {
+		// 		console.log(res);
+		// 		// 以键值对的形式返回，可用的api值true，不可用为false
+		// 		// 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+		// 		}
+		// });
+</script>

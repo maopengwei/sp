@@ -1,0 +1,88 @@
+{include file="public/_meta" /}
+<title></title>
+</head>
+<body>
+<nav class="breadcrumb">
+	<i class="Hui-iconfont">&#xe67f;</i> 首页 
+	<span class="c-gray en">&gt;</span> 入职礼包 
+	<span class="c-gray en">&gt;</span> 礼包列表 
+	<a class="btn btn-success radius r" style="margin-left:2px" href="javascript:location.replace(location.href);" title="刷新" >
+		<i class="Hui-iconfont">&#xe68f;</i>
+	</a>
+</nav>
+<div class="page-container">
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+        <span class="l">
+			<a href="javascript:;" onclick="create(0,'add','添加礼包')" class="btn btn-primary radius">
+			<i class="Hui-iconfont">&#xe600;</i> 礼包</a>
+		</span> 
+        <span class="r">共有数据：<strong>{$count}</strong> 条</span> 
+    </div> 
+	<div class="mt-20">
+		<table class="table table-border  table-hover table-bg table-sort">
+			<thead>
+				<tr class="text-c">
+					<th>id</th>
+					<th>礼包名称</th>
+					<th>图标</th>
+				<!-- 	<th>排序</th>
+					<th>状态</th> -->
+					<th >操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				{volist name="list" id="vo"}
+					<tr class="text-c">
+						<td>{$vo.id}</td>
+						<td>{$vo.cate_name}</td>
+						<td><img src="{$vo.cate_pic}" style="width:30px;"></td>
+						<!-- <td>{$vo.cate_sort}</td> -->
+						<!-- <td>{$vo.status_text}</td> -->
+						<td class="f-14 product-brand-manage">
+							<a style="text-decoration:none" onclick="create('{$vo.id}','edit','编辑分类')"  title="编辑分类">
+								<i class="Hui-iconfont">&#xe6df;编辑</i>
+							</a>
+							<a style="text-decoration:none" onClick="cate_del('{$vo.id}')" title="删除">
+								<i class="Hui-iconfont">&#xe6a6;删除</i>
+							</a>
+						</td>
+					</tr>
+					
+				{/volist}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{include file="public/_footer" /}
+<script type="text/javascript">
+
+/*----新建窗口*/
+function create(id,url,key){
+	var url = "{:url('"+url+"')}?id="+id;
+	creatIframe(url,key);
+}
+
+/*分类-删除*/
+function cate_del(data){
+    layer.confirm('确定要删除么？', {
+      btn: ['确定', '取消']
+    }, function(index, layero){
+        $.ajax({
+            type: "post",
+            url: "{:url('del')}",
+            data: {id:data},
+            success: function(data) {
+                layer.msg(data.msg);
+                if(data.code=='1'){
+                    setTimeout(function(){
+                        location.href = data.url;
+                    },1000);
+                }
+            }
+        });
+    });
+}
+</script>
+</body>
+</html>

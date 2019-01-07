@@ -1,0 +1,115 @@
+{include file="public/_meta" /}
+<title></title>
+	<style>
+		input{
+			width:30px;
+			border:none;
+		}
+	</style>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>会员管理 <span class="c-gray en">&gt;</span> 会员列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<div class="text-c">
+	<form class="Huiform" method="get" action="">
+		状态：
+		<span class="select-box inline">
+			<select name="co_status" class="select">
+				<option value="">全部</option> 
+				<option value="1">正常</option> 
+				<option value="0" style="color:red;">休息中</option>
+			</select>
+		</span>
+		<input type="text" class="input-text" style="width:150px" placeholder="编号、姓名、手机号" id="" name="keywords" value="{$Request.get.keywords|default=''}">
+		
+		<button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+		</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="l">
+			<a href="javascript:;" onclick="create(0,'courier_add','添加配送员')" class="btn btn-primary radius">
+			<i class="Hui-iconfont">&#xe600;</i>配送员</a>
+		</span> 
+		<span class="r">共有数据：<strong>{$list->total()}</strong> 条</span> </div>
+	<div class="mt-20">
+	<table class="table table-border  table-hover table-bg table-sort">
+		<thead>
+			<tr class="text-c">				
+				<th>配送员编号</th>
+				<th>姓名</th>
+				<th>手机号</th>
+				<th>状态</th>
+				<th>添加时间</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			{volist name='list' id="vo"}
+				<tr class="text-c">
+					<td>{$vo.co_number}</td>
+					<td><input type="text" value="{$vo.co_name}" onchange="change({$vo.id},$(this).val(),'co_name')" style="width:50px;"></td>
+					<td><input type="text" value="{$vo.co_tel}" onchange="change({$vo.id},$(this).val(),'co_tel')" style="width:80px;" ></td>
+					<td>
+						<select onchange="change({$vo.id},$(this).val(),'co_status')">
+								<option value="1" {if condition="$vo.co_status eq 1"}selected{/if}>正常</option>
+								<option value="0" {if condition="$vo.co_status eq 0"}selected{/if}>休息中</option>
+						</select>
+					</td>					
+					<td>{$vo.co_add_time}</td>					
+					<td class="td-manage">
+						<a style="text-decoration:none" onclick="del({$vo.id})" title="删除"><i class="Hui-iconfont">&#xe706;</i></a>
+					</td>
+				</tr>
+			{/volist}
+		</tbody>
+	</table>
+	<div class="pages" style="margin:20px;float: right; ">{$list|raw}</div>
+</div>
+{include file="public/_footer" /}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+$('select[name="co_status"]').val({$Request.get.co_status});
+
+function create(id,url,key){
+	var url = "{:url('"+url+"')}?id="+id;
+	creatIframe(url,key);
+}
+function change(id,value,key){
+	layer.confirm('确定要更改么？', {
+	      btn: ['确定', '取消']
+	    }, function(index, layero){
+	        $.ajax({
+	            type: "post",
+	            url: "{:url('courier')}",
+	            data: {id:id,value:value,key:key},
+	            success: function(data) {
+	             	if(data.code){
+	             		location.href = '';
+	             	}
+	            }
+	        });
+	    });
+}
+
+function del(id,key){
+    layer.confirm('确定要删除么？', {
+      btn: ['确定', '取消']
+    }, function(index, layero){
+        $.ajax({
+            type: "post",
+            url: "{:url('Publi/all_del')}",
+            data: {id:id,key,key},
+            success: function(data) {
+                layer.msg(data.msg);
+                if(data.code==1){
+                    setTimeout(function(){
+                        location.href = data.url;
+                    },1000);
+                }
+            }
+        });
+    });
+}	
+</script> 
+</body>
+</html>

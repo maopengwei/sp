@@ -1,0 +1,53 @@
+﻿{include file="public/_meta" /}
+<title>我的桌面</title>
+</head>
+<body>
+<div class="page-container">
+	<div class="f-14 c-error" style="margin:20px auto;">特别声明：为避免一些兼容问题，建议您使用Chrome浏览器、及含有急速内核的浏览器等打开本后台。</div>
+
+	<!-- 会员信息统计 -->
+	<table class="table table-border table-bordered table-bg">
+		<thead>
+			<tr class="text-c">
+				<th colspan="8" scope="col" >信息统计</th>
+			</tr>
+			<tr class="text-c">
+				<th>统计</th>
+				<th>会员量</th>
+				<th>今日会员</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="text-c">
+				<td>总数</td>
+				<td>{$us_count}</td>
+				<td>{$us_today}</td>
+			</tr>
+		</tbody>
+	</table>
+	<table class="table table-border table-bordered table-bg mt-20">
+		<thead>
+			<tr>
+				<th colspan="2" scope="col">服务器信息</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th width="30%">服务器地址</th>
+				<td><span id="lbServerName">{$url}</span></td>
+			</tr>
+	
+		</tbody>
+	</table>
+</div>
+<footer class="footer mt-20">
+	<div class="container">
+		<p>感谢使用<br>
+			Copyright &copy;2018-2020 All Rights Reserved.<br>
+		</p>
+	</div>
+</footer>
+<script type="text/javascript" src="/static/admin/lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="/static/admin/static/h-ui/js/H-ui.min.js"></script> 
+</body>
+</html>

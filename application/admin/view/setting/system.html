@@ -1,0 +1,154 @@
+{include file="public/_meta" /}
+<title>基本设置</title>
+<style>
+    input{
+        border:none;
+        text-align:center;
+    }
+</style>
+</head>
+
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页
+        <span class="c-gray en">&gt;</span> 系统管理
+        <span class="c-gray en">&gt;</span> 基本设置
+        <a class="btn btn-success radius r" style="margin-left:2px" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="Hui-iconfont">&#xe68f;</i>
+        </a>
+        <a class="btn btn-success radius r" style="margin-left:2px" onclick="ooo()" title="清楚缓存">
+            <i class="Hui-iconfont">&#xe706;</i>
+        </a>
+    </nav>
+    <div class="page-container">
+        <form class="form form-horizontal" id="form-article-add">
+            <div id="tab-system" class="HuiTab">
+                <div class="tabBar cl">
+                    <span>等级参数</span>
+                    <!-- <span>小区见点奖励参数</span> -->
+                </div>
+                <div class="tabCon">
+                   <table class="table table-border table-bordered table-bg">
+                        <thead>
+                            <tr class="text-c">
+                                <th width="60">ID</th>
+                                <th width="60">名称</th>
+                                <th width="120">金额</th>
+                                <th width="120">发放总额</th>
+                                <th width="120">发放天数</th>
+                                <th width="120">每日金额</th>
+                                <th width="120">等级状态</th>
+                                <th width="100">介绍</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {volist name='level' id="vo"}
+                            <tr class="text-c">
+                                <td>{$vo.id}</td>
+                                <td><input type="text" value="{$vo.cal_name}" onchange="eee($(this).val(),'cal_name',{$vo.id},1)"></td>
+                                <td><input type="text" value="{$vo.cal_money}" onchange="eee($(this).val(),'cal_money',{$vo.id},1)"></td>
+                                <td><input type="text" value="{$vo.cal_top}" onchange="eee($(this).val(),'cal_top',{$vo.id},1)"></td>
+                                <td><input type="text" value="{$vo.cal_day}" onchange="eee($(this).val(),'cal_day',{$vo.id},1)"></td>
+                                <td><input type="text" value="{$vo.cal_day_money}" onchange="eee($(this).val(),'cal_day_money',{$vo.id},1)"></td>
+                                <td>
+                                    <select onchange="eee($(this).val(),'cal_status',{$vo.id},1)">
+                                        <option value="0" {if condition="$vo.cal_status eq 0"}selected{/if}>关闭</option>
+                                        <option value="1" {if condition="$vo.cal_status eq 1"}selected{/if}>开启</option>
+                                    </select>
+                                </td>
+                                <!-- <td><input type="text" value="{$vo.cal_status}" onchange="eee($(this).val(),'cal_status',{$vo.id},1)"></td> -->
+                                <td>
+                                    <a title="编辑" href="javascript:;" onclick="create({$vo.id},'edit','详细')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+                                </td>
+                            </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tabCon">
+                    <table class="table table-border table-bordered table-bg">
+                        <thead>
+                            <tr class="text-c">
+                                <th width="120">直推数>=</th>
+                                <th width="120">参数%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {volist name='point' id="vo"}
+                            <tr class="text-c">
+                                <td><input type="text" value="{$vo.num}" onchange="eee($(this).val(),'num',{$i},2)"></td>
+                                <td><input type="text" value="{$vo.calcu}" onchange="eee($(this).val(),'calcu',{$i},2)"></td>
+                            </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                </div>
+        </form>
+    </div>
+    {include file="public/_footer" /}
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript">
+
+    function create(id,url,key){
+        var url = "{:url('"+url+"')}?id="+id;
+        creatIframe(url,key);
+    }
+
+    $(function() {
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+        $("#tab-system").Huitab({
+            index: 0
+        });
+    });
+
+    function eee(val,key,i,type){
+        // console.log(val);
+        // console.log(key);
+        // console.log(i);
+        layer.confirm(
+            '确定要更改么？', 
+            { btn: ['确定', '取消'] }, 
+            function(index, layero){
+                $.ajax({
+                    type: "post",
+                    url: "{:url('system')}",
+                    data: {val:val,key:key,i:i,type:type},
+                    success: function(data) {
+                        layer.msg('修改成功');
+                        // if(data.code){
+                        //     location.href = '';
+                        // }
+                    }
+                })
+            },
+            function(index,layero){
+               location.href = ''; 
+            }
+        );
+    }
+    // /setting/saveinfo
+    function saveConfig() {
+        $.post("{:url('setting/index')}", $('.form').serialize()).success(function(data) {
+            layer.msg(data.msg);
+            if (!data.code) {
+                $('.rst').click();
+            }
+        });
+        return false;
+    }
+
+    function ooo() {
+        $.post("{:url('every/clear')}").success(function(data) {
+            layer.msg('清除成功');
+        });
+        return false;
+    }
+
+    </script>
+        <!--/请在上方写此页面业务相关的脚本-->
+</body>
+
+</html>

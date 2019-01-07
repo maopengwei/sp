@@ -1,0 +1,87 @@
+{include file="public/_meta" /}
+<link href="/static/admin/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>用户管理 <span class="c-gray en">&gt;</span> 添加会员 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<form class="form form-horizontal" id="form-article-add">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">账户名：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" placeholder="请输入账户名" name="ptel" style="width:20%">
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button onclick="return add();" class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 确认提交</button>
+			</div>
+		</div>
+	</form>
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+        <span class="r">共有数据：<strong>{$list->total()}</strong> 条</span>
+    </div>
+    <div class="mt-20">
+        <table class="table table-border  table-hover table-bg table-sort">
+            <thead>
+                <tr class="text-c">             
+                    <th>账户名</th>
+                    <th>真实姓名</th>
+                    <th>手机号</th>
+                    <th>父账户名</th>
+                    <th>购物币</th>
+                    <th>佣金</th>
+                    <th>状态</th>
+                    <th>添加时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {volist name='list' id="vo"}
+                    <tr class="text-c">
+                        <td>{$vo.us_account}</td>
+                        <td>{$vo.us_real_name}</td>
+                        <td>{$vo.us_tel}</td>
+                        <td>{$vo.ptel}</td>                 
+                        <td>{$vo.us_wallet}</td>                    
+                        <td>{$vo.us_msc}</td>                   
+                        <td>{$vo.us_status_text}</td>                   
+                        <td>{$vo.us_add_time}</td>                              
+                        <td class="td-manage">
+                            <!-- <a style="text-decoration:none" onclick="record({$vo.id},'caiwu','财务记录')" title="财务记录"><i class="Hui-iconfont">&#xe6d2;</i></a>
+                            <a style="text-decoration:none" class="ml-5" onClick="resetpwd(this,{$vo.id})" href="javascript:;" title="重置密码"><i class="Hui-iconfont">&#xe63f;</i></a> -->
+                            <!-- <a style="text-decoration:none" onclick="record({$vo.id},'edit','会员详情')"  title="会员详情"><i class="Hui-iconfont">&#xe6c6;</i></a> -->
+                            <a title="编辑" href="javascript:;" onclick="create({$vo.id},'edit','修改用户')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+                            <a style="text-decoration:none" onclick="create({$vo.id},'addr','地址列表')" title="地址"><i class="Hui-iconfont">&#xe671;</i></a>
+                            <a style="text-decoration:none" onclick="del({$vo.id})" title="删除"><i class="Hui-iconfont">&#xe706;</i></a>
+                            <!-- <a href="{:url('excel')}" title="下载"><i class="Hui-iconfont">&#xe640;</i></a> -->
+                        </td>
+                    </tr>
+                {/volist}
+            </tbody>
+        </table>
+        <div class="pages" style="margin:20px;float: right; ">{$list|raw}</div>
+    </div>
+</div>
+
+{include file="public/_footer" /}
+
+<!--请在下方写此页面业务相关的脚本-->
+
+<script type="text/javascript">
+
+function add(){
+    $.post('{:url("add")}',$('#form-article-add').serialize()).success(function(data){
+    	layer.msg(data.msg);
+    	if(data.code){
+    		setTimeout(function(){
+    			location.href = '';
+    		},1000);
+    	}
+    });
+    return false;
+}
+
+</script>
+</body>
+</html>

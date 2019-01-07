@@ -1,0 +1,74 @@
+{include file="public/_meta" /}
+<link rel="stylesheet" href="__PUBLIC__/viewer.min.css">
+<title>报单列表</title>
+</head>
+<body class="pos-r">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 订单管理 <span class="c-gray en">&gt;</span> 订单列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="page-container">
+		<form class="Huiform" method="get" action="" target="_self">
+		<div class="text-c"> 
+		
+			状态：
+			<span class="select-box inline">
+				<select name="status" class="select">
+					<option value="0" >待审核</option> 
+					<option value="1" style="color:green;">已审核</option>
+				</select>
+			</span>
+			日期范围：
+			<input type="text" name="start" onfocus="WdatePicker()" id="datemin" class="input-text Wdate" style="width:120px;">
+			-
+			<input type="text" name="end" onfocus="WdatePicker()" id="datemax" class="input-text Wdate" style="width:120px;">
+			<input type="text" class="input-text" style="width:250px" placeholder="输入预留信息" id="" name="r_code">
+			<button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+		</div>
+		</form>
+		<div class="mt-20">
+			<table class="table table-border table-bg table-hover table-sort">
+				<thead>
+					<tr class="text-c">
+						<th ><input name="" type="checkbox" value=""></th>
+						<th >订单编号</th>
+						<th>买家账号</th>
+						<th>消费金额（元）</th>
+						<th>预留信息</th>
+						<!-- <th >消费凭证</th>
+						<th >打款凭证</th> -->
+						<th>订单详情</th>
+						<th >订单备注</th>
+						<th >操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="text-c va-m">
+						<td><input name="" type="checkbox" value=""></td>
+						<td>23</td>
+						<td>2354</td>
+						<td>3245</td>
+						<td>二位45</td>
+						<!-- <td><img  style="width: 40px;height: 40px" class="product-thumb image" src=""></td>
+						<td><img  style="width: 40px;height: 40px" class="product-thumb image" src=""></td> -->
+						<td>玩儿</td>
+						<td class="td-status">
+							<span class="label label-success radius">审核通过</span>
+						</td>
+						<td class="td-manage">
+							<a style="text-decoration:none" onClick="cancle(this,1)" href="javascript:void(0);" title="不通过"><i class="Hui-iconfont red">&#xe6a6;</i></a> 
+					 		<a title="审核通过" href="javascript:void(0);" onClick="confirm(this,'')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6a7;</i></a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<include file="Common/_footer" />
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__PUBLIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script> 
+<script src="__PUBLIC__/viewer.min.js"></script>
+<script type="text/javascript">
+$('.image').viewer(); 
+
+</script>
+</body>
+</html>

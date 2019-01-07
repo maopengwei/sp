@@ -1,0 +1,237 @@
+{include file="public/_meta" /}
+<link href="/static/admin/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>会员管理 <span class="c-gray en">&gt;</span> 会员详情 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<form action="" method="post" class="form form-horizontal" id="form-article-add">
+        {if condition="$info['us_pid']"}
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">推荐人(账户名)：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="{$info['ptel']}" style="width:20%" disabled>
+            </div>
+        </div>
+        {else}
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">推荐人(账户名)：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="p_acc" placeholder="请输入推荐人账户名" value="" style="width:20%">
+            </div>
+        </div>
+        {/if}
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">账户名：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="{$info['us_account']}" style="width:20%" disabled>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">昵称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="us_nick" value="{$info['us_nick']}" style="width:20%">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">头像：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <div style="width:110px;height: 110px;position: relative;display: inline-block; ">
+                    {if condition="$info.us_head_pic"}
+                        <img src="{$info.us_head_pic}" class="logo" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;">
+                    {else}
+                        <img src="/static/admin/img/add0.png" class="logo" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;">
+                    {/if}
+                    <input type="file" name="file" onchange="eee($(this),1)" class="input-text" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;opacity: 0;">
+                </div>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">真实姓名：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" name="us_real_name" value="{$info['us_real_name']}" class="input-text" style="width:20%">
+            </div>
+        </div>
+         <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">身份证号：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" name="us_card_id" value="{$info['us_card_id']}" class="input-text" style="width:50%">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">身份证正面：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <div style="width:110px;height: 110px;position: relative;display: inline-block; ">
+                    <img src="{$info.us_card_zheng?:'/static/admin/img/add0.png'}" class="us_card_zheng" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;">
+                    <input type="file" name="file" onchange="eee($(this),2)" class="input-text" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;opacity: 0;">
+                </div>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">身份证反面：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <div style="width:110px;height: 110px;position: relative;display: inline-block; ">
+                    <img src="{$info.us_card_fan?:'/static/admin/img/add0.png'}" class="us_card_fan" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;">
+                    <input type="file" name="file" onchange="eee($(this),3)" class="input-text" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;opacity: 0;">
+                </div>
+            </div>
+        </div>
+
+        <div style="display:none" class="ttt">
+                <input type="text" name="us_head_pic" value="{$info.us_head_pic}">
+                <input type="text" name="us_card_zheng" value="{$info.us_card_zheng}">
+                <input type="text" name="us_card_fan" value="{$info.us_card_fan}">
+                <input type="text" name="id" value="{$info.id}">
+            </div>
+		
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">手机号码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="{$info['us_tel']}" name="us_tel" style="width:20%">
+            </div>`
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">登录密码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="us_pwd" placeholder="不修改请留空" style="width:20%">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">安全密码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="us_safe_pwd" placeholder="不修改请留空" style="width:20%">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>用户状态：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input name="us_status" type="radio" value="0"  >
+                    <label for="sex-1">黑名单</label>
+                </div>
+                <div class="radio-box">
+                    <input name="us_status" type="radio" value="1" >
+                    <label for="sex-2">正常</label>
+                </div>
+                <div class="radio-box">
+                    <input name="us_status" type="radio" value="2" >
+                    <label for="sex-3">星标</label>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>用户等级：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input name="us_level" type="radio" value="0" >
+                    <label for="sex-1">速聘经理</label>
+                </div>
+                <div class="radio-box">
+                    <input name="us_level" type="radio" value="1"  >
+                    <label for="sex-2">速聘总监</label>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">摇红包次数：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="{$info['us_red_time']}" style="width:20%" disabled>
+            </div>
+        </div>
+         <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">工作状态：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="{$info['zt_text']}" style="width:20%" disabled>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">银行名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="us_bank" value="{$info['us_bank']}" style="width:20%">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">银行账户：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="us_bank_number" value="{$info['us_bank_number']}" style="width:20%">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">收款人：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="us_bank_person" value="{$info['us_bank_person']}" style="width:20%">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">开户行地址：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="us_bank_addr" value="{$info['us_bank_addr']}" style="width:20%">
+            </div>
+        </div>
+        
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button onclick="return savePro();" class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 确认提交</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+{include file="public/_footer" /}
+
+<!--请在下方写此页面业务相关的脚本-->
+
+<script type="text/javascript">
+ $('.form input[name="us_level"][value=' + "{$info['us_level']}" + ']').attr("checked", true);
+ $('.form input[name="us_status"][value=' + "{$info['us_status']}" + ']').attr("checked", true);
+//  $('.form input[name="us_is_center"][value=' + "" + ']').attr("checked", true);
+function savePro(){
+    $.post('{:url("edit")}',$('#form-article-add').serialize()).success(function(data){
+    	layer.msg(data.msg);
+    	if(data.code){
+    		setTimeout(function(){
+    			location.href = '';
+    		},500);
+    	}
+    });
+    return false;
+}
+function eee(dada,type) {
+    var data = new FormData();
+    data.append('file', dada[0].files[0]);
+    var index = layer.load(1, { shade: false }); //0代表加载的风格，支持0-2
+    $.ajax({
+        url: '{:url("store/upload")}',
+        type: 'POST',
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(data) {
+            layer.msg(data.msg);
+            if (data.code) {
+
+                if(type==1){
+                    $('.logo').attr('src',data.data);
+                    $('input[name="us_head_pic"]').val(data.data);
+                }else if(type==2){
+                    $('.us_card_zheng').attr('src',data.data);
+                    $('input[name="us_card_zheng"]').val(data.data);
+                }else if(type==3){
+                    $('.us_card_fan').attr('src',data.data);
+                    $('input[name="us_card_fan"]').val(data.data);
+                }
+                
+            }
+            layer.close(index);
+        },
+        error: function() {
+            layer.close(index);
+            layer.msg('上传出错');
+        }
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+{include file="public/_meta" /}
+<link rel="stylesheet" href="/static/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+<title></title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>团队管理 <span class="c-gray en">&gt;</span> 团队管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<div class="text-c">
+	<form class="Huiform">
+		<input type="text" class="input-text" style="width:200px" placeholder="会员编号/手机号码/用户姓名" id="" name="us_account" value="">
+		<button type="submit" onclick="return eee(1)" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+		</form>
+	</div>
+	<div class="mt-20">
+		<div class="tuandui_wrap">
+			 <div class="zTreeDemoBackground" style="margin-left:0.6rem;">
+                <ul id="treeDemo" class="ztree"></ul>
+            </div>
+		</div>
+	</div>
+</div>
+{include file="public/_footer" /}
+<!--请在下方写此页面业务相关的脚本-->
+<script src="/static/ztree/js/jquery.ztree.core.js"></script>
+
+</body>
+</html>
+<script>
+    var setting = { 
+        view: { 
+            showLine: true 
+        }, 
+        data: { 
+            simpleData: { 
+                enable: true 
+            } 
+        } 
+    }; 
+    function eee(data){
+        if(data==1){
+            var us_account = $('input[name="us_account"]').val();
+            if(!us_account){
+                layer.msg('请输入账户名');
+            }
+        }else{
+           var us_account = data;
+        }
+
+        
+        $.ajax({
+            type: "post",
+            dataType : "json",
+            global : false,
+            url : "team",
+            data:{us_account:us_account},
+            success : function(data){
+                console.log(data);
+                if (data.code){
+                    console.log(1);
+                    zNodes = data.data;
+                    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+                }else{
+                    console.log(2);
+                    layer.msg(data.msg);
+                }
+                
+            }           
+        });
+        return false;
+    }
+    var us_account = "{$us_account|default=''}";
+    if(us_account){
+        eee(us_account);
+    }
+</script> 

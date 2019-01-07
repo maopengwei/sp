@@ -1,0 +1,194 @@
+{include file="public/_meta" /}
+<title></title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+</head>
+<body>
+     <nav class="breadcrumb">
+        <i class="Hui-iconfont">&#xe67f;</i> 首页 
+        <span class="c-gray en">&gt;</span>首页视频
+        <a class="btn btn-success radius r" style="margin-left:2px" href="javascript:location.replace(location.href);" title="刷新" >
+            <i class="Hui-iconfont">&#xe68f;</i>
+        </a>
+    </nav>
+<article class="page-container">
+    <form class="form form-horizontal" id="form-admin-add"  enctype="multipart/form-data" action='shipin' method=post >
+    <div class="row cl us" style="margin-top:30px;">
+        <label class="form-label col-xs-4 col-sm-2">首页视频：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+                <video src="{:cache('setting')['vedo_path']}" controls="controls">
+                        您的浏览器不支持 video 标签。
+                </video>
+        </div>
+    </div>
+    <div class="row cl" style="margin-top:30px;">
+        <label class="form-label col-xs-4 col-sm-2">上传新视频：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <!-- <input type="fileid="file" name="file" class="input-text res" onchange="preview($(this))" placeholder="自动显示" value="" style="width:20%"> -->
+            <input type="file" id="file" name="file" class="input-text res" placeholder="自动显示" value="" style="width:20%">
+        </div>
+    </div>
+    <div class="row cl aa" style="margin-top:30px;display:none;">
+            <label class="form-label col-xs-4 col-sm-2">视频预览：</label>
+            <div class="formControls col-xs-8 col-sm-9" id="video">
+                    <video src="" id="myVideo" controls="controls">
+                            您的浏览器不支持 video 标签。
+                    </video>
+            </div>`
+        </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-2">视频缩略图：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <div style="width:110px;height: 110px;position: relative;display: inline-block; ">
+                {if condition="cache('setting')['vedo_pic']"}
+                    <img src="{:cache('setting')['vedo_pic']}" class="logo" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;">
+                {else}
+                    <img src="/static/admin/img/add0.png" class="logo" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;">
+                {/if}
+                <input type="file" name="nn" onchange="eee($(this))" class="input-text img" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;opacity: 0;">
+            </div>
+        </div>
+    </div>
+    <input type="hidden" name="ggg">
+    <div class="row cl">
+        <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+            <input class="btn btn-primary radius" type="text" onclick="return add()" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" >
+        </div>
+    </div>
+   
+
+    </form>
+</article>
+
+{include file="public/_footer"/}
+<!--请在下方写此页面业务相关的脚本-->
+
+<script type="text/javascript">
+    (function() {
+        "use strict";
+        $('#file').on('change', function                                                                                                    () {
+            var files = this.files,
+            videoURL = null,
+            windowURL = window.URL || window.webkitURL
+            if (files && files[0]) {
+            videoURL = windowURL.createObjectURL(files[0]);
+             
+            $("#myVideo").attr("src", videoURL) ;
+            $('.aa').show();
+            setTimeout(function() {
+                createIMG();
+                }, 500);
+            }
+
+
+        }).trigger('change');
+        
+
+        var createIMG = function() {
+            var scale = 0.25,
+            video = $('#video').find('video')[0],
+            canvas = document.createElement("canvas"),
+            canvasFill = canvas.getContext('2d');
+            canvas.width = video.videoWidth * scale;
+            canvas.height = video.videoHeight * scale;
+            canvasFill.drawImage(video, 0, 0, canvas.width, canvas.height);
+            var src = canvas.toDataURL("image/jpeg");
+            $('.logo').attr('src',src);
+            $('input[name="ggg"]').val(src);
+        }
+    })()
+
+
+
+$(function(){
+    $('.skin-minimal input').iCheck({
+        checkboxClass: 'icheckbox-blue',
+        radioClass: 'iradio-blue',
+        increaseArea: '20%'
+    });
+    
+});
+
+function add(){
+    console.log($('.res')[0].files);
+    var bb = $('.res')[0].files[0];
+
+
+
+    if(bb==undefined||bb==""){
+        layer.msg("请选择文件");
+        return false;
+    };
+    var cc  = $('input[name="ggg"]').val();
+    var data = new FormData();
+    
+
+    data.append('file', bb);
+    if(cc){
+        data.append('pic', cc);
+    }
+     $.ajax({
+        url: '{:url("shipin")}',
+        type: 'POST',
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(data) {
+            layer.msg(data.msg);
+            if(data.code){
+               setTimeout(function(){
+                    location.href = '';
+                },500) 
+            }
+        },
+        error: function() {
+            layer.msg('上传出错');
+        }
+    });
+}
+
+
+function eee(dada) {
+    var data = new FormData();
+    data.append('file', dada[0].files[0]);
+    var index = layer.load(1, { shade: false }); //0代表加载的风格，支持0-2
+    $.ajax({
+        url: '{:url("vedoPic")}',
+        type: 'POST',
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(data) {
+            layer.msg(data.msg);
+            if (data.code) {
+                $('.logo').attr('src',data.data);
+            }
+            layer.close(index);
+        },
+        error: function() {
+            layer.close(index);
+            layer.msg('上传出错');
+        }
+    });
+}
+
+
+
+// previewVideo = (file) => {
+//     // 建议判断下视频大小及格式，太大的可能会有问题
+    
+//     const reader = new FileReader();
+//     reader.onload = (evt) => {
+//       const myVideo = document.querySelector("#myVideo");
+//       myVideo.src = evt.target.result;
+//     };
+//  reader.readAsDataURL(file);
+//  $('.aa').show();
+// }
+
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

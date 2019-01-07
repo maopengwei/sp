@@ -1,0 +1,92 @@
+{include file="public/_meta" /}
+<link href="/static/admin/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <nav class="breadcrumb">
+        <i class="Hui-iconfont">&#xe67f;</i>首页 
+        <span class="c-gray en">&gt;</span>工人管理 
+        <span class="c-gray en">&gt;</span> 报道 
+        <a class="btn btn-success radius r" style="margin-left:2px" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="Hui-iconfont">&#xe68f;</i>
+        </a>
+    </nav>
+    <div class="page-container">
+        <form class="form form-horizontal" id="form">
+            
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">选择工厂：</label>
+                <div class="formControls col-xs-8 col-sm-9"> 
+                    <span class="select-box" style="width:20%">
+                        <select name="prod_id" class="select daili">
+                            <option value="0">选择</option>
+                            {volist name="prod" id="vo"}
+                                <option value="{$vo.id}">{$vo.prod_name}</option>
+                            {/volist}
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">员工列表：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    {volist name="list" id="vo"}
+                    <dl class="permission-list">
+                        <dd>
+                            <input type="text" class="input-text" value="{$vo.user.us_account}" style="width:30%">
+                            <input type="text" class="input-text" value="{$vo.user.us_real_name}" style="width:30%">
+                            <input type="text" class="input-text" value="{$vo.user.us_tel}" style="width:30%">
+                        </dd>
+                    </dl>
+                    {/volist}
+                </div>
+            </div>
+
+
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                    <button onclick="return eee();" class="btn btn-primary radius tt" type="submit"><i class="Hui-iconfont">&#xe632;</i> 确认提交
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="big" >
+        <!-- <img src="/static/admin/img/add0.png" /> -->
+    </div>
+    {include file="public/_footer" /}
+    <script type="text/javascript" src="/static/admin/lib/ueditor/1.4.3/ueditor.config.js"></script>
+    <script type="text/javascript" src="/static/admin/lib/ueditor/1.4.3/ueditor.all.min.js"></script>
+    <script type="text/javascript" src="/static/admin/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript">
+    var aa = 1;
+    /*----------------图片*/
+
+    /*----添加*/
+    function eee(){
+        if(aa==0){
+            return false;
+        }else{
+            var storage=window.localStorage;
+            storage.a=[];
+            aa = 0;
+        }
+        var prod_id = $('.daili').val();
+        var id = "{$id}";
+        console.log(id);
+
+        $.ajax({
+            url: '{:url("cha")}',
+            type: 'post',
+            data: {prod_id:prod_id,id:id},
+            success: function(data) {
+                layer.msg(data.msg);
+            },
+        });
+        return false;
+    }
+    </script>
+</body>
+
+</html>

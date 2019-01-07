@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>支付方式</title>
+    <link rel="stylesheet" type="text/css" href="/static/mobile/css/pay_way.css"/>
+    <script src="/static/mobile/js/base.js"></script>
+    <script type="text/javascript">
+    	
+   		document.addEventListener('plusready', function(){
+   			//console.log("所有plus api都应该在此事件发生后调用，否则会出现plus is undefined。"
+   			
+   		});
+    </script>
+</head>
+<body>
+	<div class="wrap">
+		<header>
+			<a href="javascript:history.go(-1)"><img src="/static/mobile/img/qqq.png"/></a>
+			<p>支付方式</p>
+		</header>
+		<section>
+			<h2>需支付：<span>{$info['money']}</span></h2>
+			<h1>请选择支付方式</h1>
+			<div class="zhifu">
+				<div>
+					<ul>
+						<li><img src="/static/mobile/img/weixin.png"/>微信<input type="radio" value="1" name="pay_type" checked/></li>
+						<li><img src="/static/mobile/img/zhifubao.png"/>支付宝<input type="radio" value="2" name="pay_type" /></li>
+						<li><img src="/static/mobile/img/yhk.png"/>银联<input type="radio" value="3" name="pay_type" /></li>
+					</ul>															
+				</div>
+			</div>
+			<div class="queren">
+				<span onclick="eee()">立即支付</span>
+			</div>
+		</section>
+	</div>
+</body>
+</html>
+<script src="/static/mine/jquery/jquery-2.2.4.min.js"></script>
+<script src="/static/mine/layer/layer.js"></script>
+<script type="text/javascript">
+	function eee(){
+		var money = "{$info['money']}";
+		var type = "{$info['type']}";
+		var pay_type = $('input[name="pay_type"]:checked').val();
+		console.log(pay_type);
+		if(pay_type==1){
+			layer.msg('正在跳转微信');
+			setTimeout(function(){
+	            location.href = "/index/wechat/index/?type="+type+"&money="+money;
+	            // location.href = "/index/wecpay/index/?type="+type+"&money="+money;
+	        },500)
+		}else if(pay_type==2){
+			layer.msg('正在跳转支付宝');
+	        setTimeout(function(){
+	            location.href = "/index/alipay/index/?type="+type+"&money="+money;
+	        },500)
+		}else if(pay_type==3){
+			layer.msg('银联支付未开通');
+		}
+	}
+</script>

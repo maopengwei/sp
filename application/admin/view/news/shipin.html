@@ -1,0 +1,181 @@
+{include file="public/_meta" /}
+<title></title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+</head>
+<body>
+     <nav class="breadcrumb">
+        <i class="Hui-iconfont">&#xe67f;</i> 首页 
+        <span class="c-gray en">&gt;</span>首页视频
+        <a class="btn btn-success radius r" style="margin-left:2px" href="javascript:location.replace(location.href);" title="刷新" >
+            <i class="Hui-iconfont">&#xe68f;</i>
+        </a>
+    </nav>
+    <article class="page-container">
+        <form class="form form-horizontal" id="form-admin-add"  enctype="multipart/form-data" action='shipin' method=post >
+        <div class="row cl us" style="margin-top:30px;">
+            <label class="form-label col-xs-4 col-sm-2">首页视频：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                    <video src="{:cache('setting')['vedo_path']}" controls="controls">
+                            您的浏览器不支持 video 标签。
+                    </video>
+                <!-- <input type="text" class="input-text res" onkeyup="get_user($(this).val())" style="width:20%"> -->
+            </div>`
+        </div>
+        <div class="row cl" style="margin-top:30px;">
+            <label class="form-label col-xs-4 col-sm-2">上传新视频：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="file" name="file" class="input-text res" onchange="preview($(this))" placeholder="自动显示" value="" style="width:20%">
+            </div>`
+        </div>
+        <div class="row cl aa" style="margin-top:30px;display:none;">
+                <label class="form-label col-xs-4 col-sm-2">视频预览：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                        <video src="" id="myVideo" controls="controls">
+                                您的浏览器不支持 video 标签。
+                        </video>
+                </div>`
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">视频缩略图：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <div style="width:110px;height: 110px;position: relative;display: inline-block; ">
+                    {if condition="cache('setting')['vedo_pic']"}
+                        <img src="{:cache('setting')['vedo_pic']}" class="logo" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;">
+                    {else}
+                        <img src="/static/admin/img/add0.png" class="logo" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;">
+                    {/if}
+                    <input type="file" name="nn" onchange="eee($(this))" class="input-text" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;opacity: 0;">
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <input class="btn btn-primary radius" type="text" onclick="return add()" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" >
+            </div>
+        </div>
+       
+
+        </form>
+    </article>
+
+{include file="public/_footer"/}
+<!--请在下方写此页面业务相关的脚本-->
+
+<script type="text/javascript">
+//     $(function() {
+//         var ue = UE.getEditor('editor');
+        
+//         $('.skin-minimal input').iCheck({
+//             checkboxClass: 'icheckbox-blue',
+//             radioClass: 'iradio-blue',
+//             increaseArea: '20%'
+//         }); 
+// <script type="text/javascript">
+$(function(){
+    $('.skin-minimal input').iCheck({
+        checkboxClass: 'icheckbox-blue',
+        radioClass: 'iradio-blue',
+        increaseArea: '20%'
+    });
+    
+});
+
+function preview(obj){
+    console.log(obj);
+    console.log(obj[0].files[0]);
+    var objUrl = getObjectURL(obj[0].files[0]) ;
+    if (objUrl) {
+         $("#myVideo").attr("src", objUrl) ;
+         $('.aa').show();
+     }
+}
+
+function getObjectURL(file) {
+     var url = null ;
+     if (window.createObjectURL!=undefined) { // basic
+         url = window.createObjectURL(file) ;
+     } else if (window.URL!=undefined) { // mozilla(firefox)
+         url = window.URL.createObjectURL(file) ;
+     } else if (window.webkitURL!=undefined) { // webkit or chrome
+         url = window.webkitURL.createObjectURL(file) ;
+     }
+     return url ;
+}
+
+function add(){
+    // var fileObj = document.getElementById("file").files[0]; // js 获取文件对象
+    console.log($('.res')[0].files);
+    var bb = $('.res')[0].files[0];
+    if(bb==undefined||bb==""){
+        layer.msg("请选择文件");
+        return false;
+    };
+    var data = new FormData();
+    data.append('file', bb);
+    var index = layer.load(1, { shade: false }); //0代表加载的风格，支持0-2
+     $.ajax({
+        url: '{:url("shipin")}',
+        type: 'POST',
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(data) {
+            layer.msg(data.msg);
+            setTimeout(function(){
+                location.href = '';
+            },500)
+            layer.close(index);
+        },
+        error: function() {
+            layer.close(index);
+            layer.msg('上传出错');
+        }
+    });
+}
+
+
+function eee(dada) {
+    var data = new FormData();
+    data.append('file', dada[0].files[0]);
+    var index = layer.load(1, { shade: false }); //0代表加载的风格，支持0-2
+    $.ajax({
+        url: '{:url("vedoPic")}',
+        type: 'POST',
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(data) {
+            layer.msg(data.msg);
+            if (data.code) {
+                $('.logo').attr('src',data.data);
+            }
+            layer.close(index);
+        },
+        error: function() {
+            layer.close(index);
+            layer.msg('上传出错');
+        }
+    });
+}
+
+
+
+// previewVideo = (file) => {
+//     // 建议判断下视频大小及格式，太大的可能会有问题
+    
+//     const reader = new FileReader();
+//     reader.onload = (evt) => {
+//       const myVideo = document.querySelector("#myVideo");
+//       myVideo.src = evt.target.result;
+//     };
+//  reader.readAsDataURL(file);
+//  $('.aa').show();
+// }
+
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

@@ -1,0 +1,210 @@
+{include file="public/_meta" /}
+<link href="/static/admin/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <nav class="breadcrumb">
+        <i class="Hui-iconfont">&#xe67f;</i>首页 <span class="c-gray en">&gt;</span>工厂管理 <span class="c-gray en">&gt;</span> 添加工厂 
+        <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="Hui-iconfont">&#xe68f;</i>
+        </a>
+    </nav>
+    <div class="page-container">
+        <form class="form form-horizontal" id="form">
+            
+            <!-- <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>分区：</label>
+                <div class="formControls col-xs-8 col-sm-9"> 
+                    <span class="select-box" style="width:20%">
+                        <select name="prod_zone" onchange="change($(this).val())" class="select">
+                            <option value="0">普通工厂</option>
+                            <option value="1">积分工厂</option>
+                            <option value="2">拍卖</option>
+                            <option value="3">团购</option>
+                            <option value="4">预售</option>
+                        </select>
+                    </span>
+                </div>
+            </div> -->
+
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">所属地域：</label>
+                <div class="formControls col-xs-8 col-sm-9"> 
+                    <span class="select-box" style="width:20%">
+                        <select name="cate_id" class="select">
+                            <option value="0">选择</option>
+                            {volist name="cate" id="vo"}
+                                <option value="{$vo.id}">{$vo.cate_name}</option>
+                            {/volist}
+                        </select>
+                    </span>
+                </div>
+            </div>
+
+
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">工厂名称：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" placeholder="工厂名称" name="prod_name" style="width:20%">
+                </div>
+            </div>
+             <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">工厂简介：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" placeholder="工厂简介" name="prod_intro">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">主图3*2：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <div style="width:110px;height: 110px;position: relative;display: inline-block; ">
+                        <img src="/static/admin/img/add0.png" class="logo" onclick="click_file()" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;">
+                    </div>
+                </div>
+            </div>
+            <div style="display:none" class="ttt">
+                <input type="file" class="click_file" onchange="preview(this)">
+            </div>
+            <!-- <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">工厂价格：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" name="prod_price" style="width:20%">
+                </div>
+            </div> -->
+            <!-- <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">工厂原价：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" name="prod_price_yuan" style="width:20%">
+                </div>
+            </div> -->
+            
+            
+
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">详细介绍：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <textarea id="editor" type="text/plain" style="width:100%;height:400px;" name="prod_describe" >
+                    </textarea>
+                </div>
+            </div>
+
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                    <button onclick="return eee();" class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 确认提交
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="big" >
+        <!-- <img src="/static/admin/img/add0.png" /> -->
+    </div>
+    {include file="public/_footer" /}
+    <script type="text/javascript" src="/static/admin/lib/ueditor/1.4.3/ueditor.config.js"></script>
+    <script type="text/javascript" src="/static/admin/lib/ueditor/1.4.3/ueditor.all.min.js"></script>
+    <script type="text/javascript" src="/static/admin/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript">
+
+        var ue = UE.getEditor('editor');
+        function province_change(data){
+			$('.city').show();
+			$('.area').hide();
+			$.ajax({
+				type:"post",
+				data:{code:data},
+				url:"{:url('getcity')}",
+				success:function(data){
+					var html = '<option value="">请选择市</option>';
+					$.each(data,function(index,value){
+						html +=  '<option value="'+value.code+'">'+value.name+'</option>';
+					})
+					$('.cici').html(html)
+				}
+			})
+		}
+		function city_change(data){
+			$('.area').show();
+			$.ajax({
+				type:"post",
+				data:{code:data},
+				url:"{:url('getarea')}",
+				success:function(data){
+					var str = ''
+					data.map(function(result){
+						console.log(result)
+						var html  = `
+						<option value=${result.code}>${result.name}</option>'
+						` 
+						str+=html
+					})
+					
+					$('.arar').html(str)
+				}
+			})
+		}
+    /*----------------图片*/
+    function click_file(){
+        $('.click_file').click();
+    }
+    var bbb;
+    function preview(dada){
+        if(!dada.value){
+            return;
+        }
+        var pattern = /(\.*.jpg$)|(\.*.png$)|(\.*.jpeg$)|(\.*.gif$)|(\.*.bmp$)/;
+        if (!pattern.test(dada.value)) {
+            layer.msg("系统仅支持jpg/jpeg/png/gif/bmp格式的照片！");
+            dada.focus();
+            $(dada).val("");
+            return false;
+        } else {
+            var path;
+            if (document.all)
+            {
+                dada.select();
+                path = document.selection.createRange().text;
+            }
+            else
+            {
+                path = URL.createObjectURL(dada.files[0]);
+            }
+            bbb = dada.files[0];
+            $('.logo').attr('src', path);
+        }
+    }
+
+    /*----添加*/
+    function eee(){
+        var data = new FormData(document.getElementById('form')); //只有他能
+        if(bbb){
+            console.log(bbb);
+            data.append('file', bbb);
+        }else{
+            layer.msg('请上传图片');
+            return false;
+        }
+        var index = layer.load(1, { shade: false }); //0代表加载的风格，支持0-2
+        $.ajax({
+            url: '{:url("add")}',
+            type: 'post',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                layer.msg(data.msg);
+                if (data.code) {
+                    setTimeout(function(){
+                        location.href = '';
+                    },500); 
+                }
+                layer.close(index);
+            },
+        });
+        return false;
+    }
+    </script>
+</body>
+
+</html>

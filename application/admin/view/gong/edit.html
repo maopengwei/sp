@@ -1,0 +1,225 @@
+{include file="public/_meta" /}
+<title></title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+</head>
+<body>
+
+    <nav class="breadcrumb">
+        <i class="Hui-iconfont">&#xe67f;</i> 首页 
+        <span class="c-gray en">&gt;</span> 商城管理 
+        <span class="c-gray en">&gt;</span> 编辑工种 
+        <a class="btn btn-success radius r" style="margin-left:2px" href="javascript:location.replace(location.href);" title="刷新" >
+            <i class="Hui-iconfont">&#xe68f;</i>
+        </a>
+    </nav>
+
+    <article class="page-container">
+        <form class="form form-horizontal" id="form-admin-add">
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>工种名称：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="{$info.gong_name|default=''}" placeholder="" id="" name="gong_name">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">工种图标：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <div style="width:110px;height: 110px;position: relative;display: inline-block; ">
+                        <img src="{$info.gong_pic|default='/static/admin/img/add0.png'}" class="gong_pic" onclick="aaa(1)" style="width:110px;height: 110px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row cl us" style="margin-top:30px;">
+                <label class="form-label col-xs-4 col-sm-2">首页视频：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                        <video src="{$info['gong_video']}" class="gong_video"  onclick="aaa(2)" controls="controls">
+                                您的浏览器不支持 video 标签。
+                        </video>
+                </div>`
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">视频缩略图：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <div style="width:110px;height: 110px;position: relative;display: inline-block; ">
+                        <img src="{$info.gong_video_pic|default='/static/admin/img/add0.png'}" class="gong_video_pic"  onclick="aaa(3)" style="width:110px;height: 110px;">
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:none" class="ttt">
+                <input type="text" name="id" value="{$info.id}">
+                <input type="file" class="pic"       onchange="eee($(this),1)" > <!-- 上传图标 -->
+                <input type="file" class="video_pic" onchange="eee($(this),2)" >
+                <input type="file" class="video"  onchange="preview($(this))">
+
+                <input type="text" name="gong_pic" value="{$info['gong_pic']}">
+                <input type="text" name="gong_video" value="{$info['gong_video']}">
+                <input type="text" name="gong_video_pic" value="{$info['gong_video_pic']}">
+
+            </div>
+
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                    <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" onclick="return edit()">
+                </div>
+            </div>
+        </form>
+    </article>
+    {include file="public/_footer"/}
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+    <script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+    <script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+    });
+    //点击上传
+    function aaa(b){
+        if(b==1){
+           $('.pic').click(); 
+        }else if(b==2){
+             $('.video').click(); 
+        }else if(b==3){
+             $('.video_pic').click(); 
+        }
+    }
+
+    function eee(dada,t) {
+        var data = new FormData();
+        data.append('file', dada[0].files[0]);
+        var index = layer.load(1, { shade: false }); //0代表加载的风格，支持0-2
+        $.ajax({
+            url: '{:url("every/upload")}',
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                layer.msg(data.msg);
+                if (data.code) {
+                    if(t==1){
+                        $('.gong_pic').attr('src',data.data);
+                        $('input[name="gong_pic"]').val(data.data);
+                    }else{
+                        $('.gong_video_pic').attr('src',data.data);
+                        $('input[name="gong_video_pic"]').val(data.data); 
+                    }
+                }
+                layer.close(index);
+            },
+            error: function() {
+                layer.close(index);
+                layer.msg('上传出错');
+            }
+        });
+    }
+
+    function preview(obj){
+      
+        var bb = obj[0].files[0];
+        if(bb==undefined||bb==""){
+            layer.msg("请选择文件");
+            return false;
+        };
+        var data = new FormData();
+        data.append('file', bb);
+         $.ajax({
+            url: '{:url("every/shipin")}',
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                layer.msg(data.msg);
+                console.log(data)
+                if(data.code){
+                    $('.gong_video').attr('src',data.data);
+                    $('input[name="gong_video"]').val(data.data); 
+                }
+            },
+            error: function() {
+                layer.msg('上传出错');
+            }
+        });
+    }
+
+    function getObjectURL(file) {
+         var url = null ;
+         if (window.createObjectURL!=undefined) { // basic
+             url = window.createObjectURL(file) ;
+         } else if (window.URL!=undefined) { // mozilla(firefox)
+             url = window.URL.createObjectURL(file) ;
+         } else if (window.webkitURL!=undefined) { // webkit or chrome
+             url = window.webkitURL.createObjectURL(file) ;
+         }
+         return url ;
+    } 
+    function add(){
+        // var fileObj = document.getElementById("file").files[0]; // js 获取文件对象
+        console.log($('.res')[0].files);
+        var bb = $('.res')[0].files[0];
+        if(bb==undefined||bb==""){
+            layer.msg("请选择文件");
+            return false;
+        };
+        var data = new FormData();
+        data.append('file', bb);
+        var index = layer.load(1, { shade: false }); //0代表加载的风格，支持0-2
+         $.ajax({
+            url: '{:url("every/shipin")}',
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                layer.msg(data.msg);
+                setTimeout(function(){
+                    location.href = '';
+                },500)
+                layer.close(index);
+            },
+            error: function() {
+                layer.close(index);
+                layer.msg('上传出错');
+            }
+        });
+    }
+
+    function edit() {
+        var data = new FormData(document.getElementById('form-admin-add')); //只有他能
+        var index = layer.load(1, { shade: false }); //0代表加载的风格，支持0-2
+        $.ajax({
+            url: '{:url("edit")}',
+            type: 'post',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                layer.msg(data.msg);
+                if (data.code) {
+                    // setTimeout(function(){
+                    //     location.href = '';
+                    // },500); 
+                }
+                layer.close(index);
+            },
+        });
+        return false;
+    }
+    </script>
+    <!--/请在上方写此页面业务相关的脚本-->
+</body>
+
+</html>

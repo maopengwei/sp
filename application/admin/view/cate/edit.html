@@ -1,0 +1,161 @@
+{include file="public/_meta" /}
+<title></title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+</head>
+<body>
+
+    <nav class="breadcrumb">
+        <i class="Hui-iconfont">&#xe67f;</i> 首页 
+        <span class="c-gray en">&gt;</span> 商城管理 
+        <span class="c-gray en">&gt;</span> 编辑分类 
+        <a class="btn btn-success radius r" style="margin-left:2px" href="javascript:location.replace(location.href);" title="刷新" >
+            <i class="Hui-iconfont">&#xe68f;</i>
+        </a>
+    </nav>
+
+    <article class="page-container">
+        <form class="form form-horizontal" id="form-admin-add">
+           
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>商品分类：</label>
+                <div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
+                <select name="cate_pid" class="select">
+                        <option value="0">顶级分类</option>
+                        <!-- {volist name="cate" id="vo"}
+                        <option value="{$vo.id}">{$vo.cate_name}</option>
+                        {/volist} -->
+                </select>
+                </span> </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>分类名：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="{$info.cate_name|default=''}" placeholder="" id="" name="cate_name">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">分类logo：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <div style="width:110px;height: 110px;position: relative;display: inline-block; ">
+                        <img src="{$info.cate_pic}" class="logo" onclick="click_file()" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;">
+                    </div>
+                </div>
+            </div>
+             <div style="display:none" class="ttt">
+                <input type="text" name="id" value="{$info.id|default=''}">
+                <input type="file" class="click_file" onchange="preview(this)">
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>状态：</label>
+                <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                    <div class="radio-box">
+                        <input name="cate_status" type="radio" value="1" id="">
+                        <label for="sex-1">在线</label>
+                    </div>
+                    <div class="radio-box">
+                        <input name="cate_status" type="radio" value="0">
+                        <label for="sex-2" class="c-red">不在线</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>排序：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="{$info.cate_sort|default=''}" placeholder="" id="" name="cate_sort" style="width:100px">
+                </div>
+            </div>
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                    <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" onclick="return edit()">
+                </div>
+            </div>
+        </form>
+    </article>
+    {include file="public/_footer"/}
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+    <script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+    <script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        $('.form select[name="cate_pid"]').val({$info.cate_pid});
+        $('.form input[name="cate_status"][value=' + "{$info['cate_status']}" + ']').attr("checked", true);
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+    });
+
+
+     /*----------------图片*/
+    function click_file(){
+        $('.click_file').click();
+    }
+    var bbb;
+    function preview(dada){
+        if(!dada.value){
+            return;
+        }
+        var pattern = /(\.*.jpg$)|(\.*.png$)|(\.*.jpeg$)|(\.*.gif$)|(\.*.bmp$)/;
+        if (!pattern.test(dada.value)) {
+            layer.msg("系统仅支持jpg/jpeg/png/gif/bmp格式的照片！");
+            dada.focus();
+            $(dada).val("");
+            return false;
+        } else {
+            var path;
+            if (document.all)
+            {
+                dada.select();
+                path = document.selection.createRange().text;
+            }
+            else
+            {
+                path = URL.createObjectURL(dada.files[0]);
+            }
+            bbb = dada.files[0];
+            $('.logo').attr('src', path);
+        }
+    }
+
+
+
+
+
+    function edit() {
+        var data = new FormData(document.getElementById('form-admin-add')); //只有他能
+        if(bbb){
+            data.append('file', bbb);
+        }
+        // else{
+        //     layer.msg('请上传图片');
+        //     return false;
+        // }
+
+        console.log(123);
+        var index = layer.load(1, { shade: false }); //0代表加载的风格，支持0-2
+        $.ajax({
+            url: '{:url("edit")}',
+            type: 'post',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                layer.msg(data.msg);
+                if (data.code) {
+                    setTimeout(function(){
+                        location.href = '';
+                    },500); 
+                }
+                layer.close(index);
+            },
+        });
+    }
+    </script>
+    <!--/请在上方写此页面业务相关的脚本-->
+</body>
+
+</html>

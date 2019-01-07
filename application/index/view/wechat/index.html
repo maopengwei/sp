@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>微信安全支付</title>
+</head>
+<body>
+<script type="text/javascript">
+    //调用微信JS api 支付
+    function onBridgeReady() {
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest',
+            {$order},
+
+            function (res) {
+                if (res.err_msg == "get_brand_wcpay_request:ok") {
+                   
+                } else if (res.err_msg == "get_brand_wcpay_request:cancel") {
+                    alert('取消支付');
+                } else {
+                    // alert(res.err_code+res.err_desc+res.err_msg);
+                   alert(res.err_code+res.err_desc);
+                }
+               // alert(res.err_code+res.err_desc);
+                window.location.replace("{:url('/')}");
+            }
+        );
+    }
+
+    if (typeof WeixinJSBridge == "undefined") {
+        if (document.addEventListener) {
+            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+        } else if (document.attachEvent) {
+            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+        }
+    } else {
+        onBridgeReady();
+    }
+</script>
+</body>
+</html>

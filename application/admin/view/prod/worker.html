@@ -1,0 +1,345 @@
+{include file="public/_meta" /}
+<title></title>
+<style>
+	.Hui-iconfont{
+		margin:0 2px;
+		font-size:15px;
+	}
+</style>
+</head>
+<body>
+<nav class="breadcrumb">
+	<i class="Hui-iconfont">&#xe67f;</i> 首页 
+	<span class="c-gray en">&gt;</span>用户管理 
+	<span class="c-gray en">&gt;</span> 会员列表 
+	<a class="btn btn-success radius r" style="margin-left:2px" href="javascript:void(0);" onclick="downdo()" title="下载" >
+		<i class="Hui-iconfont">&#xe640;</i>
+	</a>
+	<a class="btn btn-success radius r" style="margin-left:2px" href="javascript:location.replace(location.href);" title="刷新" >
+		<i class="Hui-iconfont">&#xe68f;</i>
+	</a>
+
+</nav>
+<div class="page-container">
+	<div class="text-c">
+		<form class="Huiform" method="get" action="">
+			身份状态：
+			<span class="select-box inline">
+				<select name="zt" class="select">
+					<option value="">全部</option> 
+					<option value="0">未选厂</option> 
+					<option value="1">未面试</option> 
+					<option value="2">未入职</option> 
+					<option value="3">未满工</option> 
+					<option value="4">已满工</option> 
+				</select>
+			</span>
+			<input type="hidden" name="id" value="{$Request.get.id|default=''}">
+			<input type="text" class="input-text" style="width:150px" placeholder="姓名、编号、手机号" id="" name="keywords" value="{$Request.get.keywords|default=''}">
+			<button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+		</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="l" style="margin-right:1rem">
+			<a href="javascript:;" onclick="bao()" class="btn btn-primary radius">
+			报道</a>
+		</span>
+		<span class="l" style="margin-right:1rem">
+			<a href="javascript:;" onclick="ru()" class="btn btn-primary radius">
+			入职</a>
+		</span>
+		<span class="l" style="margin-right:1rem">
+			<a href="javascript:;" onclick="out()" class="btn btn-primary radius">
+			淘汰</a>
+		</span>
+		<span class="l" style="margin-right:1rem">
+			<a href="javascript:;" onclick="cha()" class="btn btn-primary radius">
+			换厂</a>
+		</span>
+		<span class="l" style="margin-right:1rem">
+			<a href="javascript:;" onclick="man()" class="btn btn-primary radius">
+			满工</a>
+		</span>    
+		<span class="r">共有数据：<strong>{$list->total()}</strong> 条</span>
+	</div>
+	<div class="mt-20">
+		<table class="table table-border  table-hover table-bg table-sort">
+			<thead>
+				<tr class="text-c">				
+					<th>多选</th>
+					<th>账户名</th>
+					<th>真实姓名</th>
+					<th>手机号</th>
+					<th>相关</th>
+					<th>身份状态时间</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				{volist name='list' id="vo"}
+					<tr class="text-c">
+						<td><input type="checkbox" name="duo" value="{$vo.id}" onclick="save($(this).val())"  class="duo"></td>
+						<td>
+							<a onclick='member_show("会员信息","/admin/user/kan","{$vo.us_id}","500","500")'>
+								{$vo.user.us_account}
+							</a>
+						</td>
+						<td>{$vo.user.us_real_name}</td>
+						<td>{$vo.user.us_tel}</td>
+						<td> 
+							<a onClick='create("{$vo.us_id}","/admin/user/tupu","团队")'>团队</a>
+						</td>
+						<td>
+							{if condition="$vo.in_zt eq 0"}
+								未选厂 | {$vo.in_add_time}
+							{elseif condition="$vo.in_zt eq 1"}
+								未报道 | {$vo.in_ij_time}
+							{elseif condition="$vo.in_zt eq 2"}
+								未入职 | {$vo.in_bd_time}
+							{elseif condition="$vo.in_zt eq 3"}
+								未满工 | {$vo.in_ru_time}
+							{elseif condition="$vo.in_zt eq 4"}
+								已满工 | {$vo.in_man_time}
+							{elseif condition="$vo.in_zt eq 5"}
+								被淘汰 |{$vo.in_out_time}
+							{/if}
+						</td>					
+						<td class="td-manage">
+							<a style="text-decoration:none" class="ml-7" onclick="del('{$vo.id}')" title="删除">
+								<i class="Hui-iconfont">&#xe706;删除</i>
+							</a>
+						</td>
+					</tr>
+				{/volist}
+			</tbody>
+		</table>
+		<div class="pages" style="margin:20px;float: right; ">{$list|raw}</div>
+	</div>
+</div>
+{include file="public/_footer" /}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+
+$(function(){
+	$('select[name="zt"]').val('{$Request.get.zt}');
+})	
+
+/*用户-查看*/
+function member_show(title,url,parm,w,h){
+	var uuuu = url+"?id="+parm;
+	layer_show(title,uuuu,w,h);
+}
+//团队
+function create(id,url,key){
+	var uuu = url+"?id="+id;
+	console.log(uuu);
+	creatIframe(uuu,key);
+}
+
+//全选
+var storage=window.localStorage;
+var c = storage.getItem('a');
+console.log(c);
+if(c){
+	var a = c.split(",");
+}else{
+	var a =[]; 
+}
+
+if(a instanceof Array){
+	$('.duo').each(function(){
+		if( a.indexOf(this.value) >-1 ){
+			$(this).attr('checked',true);
+		}
+	});
+}else{
+	a = [];
+}
+
+function save(data) {
+	console.log(data);
+	var b = a.indexOf(data);
+	if( b >-1 ){
+		a.splice(b,1);
+	}else{
+		a.push(data);
+	}
+    storage.a=a;
+}
+
+/*------------------下载*/
+function downdo(){
+	var url = window.location.href;
+	$.ajax({
+		type:'get',
+		url:url,
+		data:{a:1},
+		success:function(data){
+			window.location.href = data;
+		}
+	})
+}
+/*------------------删除*/
+function del(id){
+    layer.confirm('确定要删除么？', {
+      btn: ['确定', '取消']
+    }, function(index, layero){
+        $.ajax({
+            type: "post",
+            url: "{:url('del')}",
+            data: {id:id},
+            success: function(data) {
+                layer.msg(data.msg);
+                if(data.code==1){
+                    setTimeout(function(){
+                        location.href = data.url;
+                    },1000);
+                }
+            }
+        });
+    });
+}
+/*------------------区代*/
+function bao(){
+	var prod_id = '{$prod_id}';
+		
+	var dd = localStorage.getItem('a');
+	if(!dd){
+		layer.msg('请选择用户');return false;	
+	}
+
+	$.ajax({
+		type: "post",
+		url: "{:url('is_bao')}",
+		data: {dd:dd},
+		success: function(data) {
+			console.log(data);
+			if(data.code!=1){
+				layer.msg(data.msg);return false;	
+			}else{
+				layer.confirm('确定为这些人已经报到了么？', {
+			      btn: ['确定', '取消']
+			    }, function(index, layero){
+
+			    	creatIframe('/admin/prod/bao?prod_id='+prod_id+'&id='+dd,'报道');
+			         // create(dd,'/admin/prod/agency?prod_id='+prod_id,);
+			    });
+			}
+		}
+	});
+
+}
+
+/*------------------入职*/
+function ru(){
+	var dd = localStorage.getItem('a');
+	if(!dd){
+		layer.msg('请选择用户');return false;	
+	}
+	layer.confirm('确定这些人已经入职了么？', {
+      btn: ['确定', '取消']
+    }, function(index, layero){
+	    $.ajax({
+			type: "post",
+			url: "{:url('is_ru')}",
+			data: {id:dd},
+			success: function(data) {
+				console.log(data);
+				layer.msg(data.msg);
+				if(data.code==1){
+           			storage.a=[];
+					return false;	
+				}
+			}
+		});
+    });
+}
+/*------------------淘汰*/
+function out(){
+	var dd = localStorage.getItem('a');
+	if(!dd){
+		layer.msg('请选择用户');return false;	
+	}
+	layer.confirm('确定这些人被淘汰了么？', {
+      btn: ['确定', '取消']
+    }, function(index, layero){
+	    $.ajax({
+			type: "post",
+			url: "{:url('is_out')}",
+			data: {id:dd},
+			success: function(data) {
+				console.log(data);
+				layer.msg(data.msg);
+				if(data.code==1){
+           			storage.a=[];
+           			setTimeout(function(){
+           				location.href='';
+           			},500)
+					return false;	
+				}
+			}
+		});
+    });
+}
+/*------------------换厂*/
+function cha(){
+	var prod_id = '{$prod_id}';
+		
+	var dd = localStorage.getItem('a');
+	if(!dd){
+		layer.msg('请选择用户');return false;	
+	}
+
+	$.ajax({
+		type: "post",
+		url: "{:url('is_cha')}",
+		data: {id:dd},
+		success: function(data) {
+			console.log(data);
+			if(data.code!=1){
+				layer.msg(data.msg);return false;	
+			}else{
+				layer.confirm('确定为这些人更换厂家么？', {
+			      btn: ['确定', '取消']
+			    }, function(index, layero){
+
+			    	creatIframe('/admin/prod/cha?prod_id='+prod_id+'&id='+dd,'换厂');
+			         // create(dd,'/admin/prod/agency?prod_id='+prod_id,);
+			    });
+			}
+		}
+	});
+}
+
+/*------------------满工*/
+function man(){
+	var dd = localStorage.getItem('a');
+	if(!dd){
+		layer.msg('请选择用户');return false;	
+	}
+	layer.confirm('确定这些人已经满工了么？', {
+      btn: ['确定', '取消']
+    }, function(index, layero){
+	    $.ajax({
+			type: "post",
+			url: "{:url('is_man')}",
+			data: {id:dd},
+			success: function(data) {
+				console.log(data);
+				layer.msg(data.msg);
+				if(data.code==1){
+           			storage.a=[];
+
+           			setTimeout(function(){
+           				location.href='';
+           			},500)
+           			
+					return false;	
+				}
+			}
+		});
+    });
+}
+</script> 
+</body>
+</html>

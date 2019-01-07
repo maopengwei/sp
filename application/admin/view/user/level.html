@@ -1,0 +1,79 @@
+{include file="public/_meta" /}
+<link href="/static/admin/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>会员管理 <span class="c-gray en">&gt;</span> 修改经销商 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<form action="" method="post" class="form form-horizontal" id="form-article-add">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">账户名：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="{$info['us_account']}" style="width:20%" disabled>
+            </div>
+        </div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">真实姓名：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" value="{$info['us_real_name']}" class="input-text" style="width:20%" disabled>
+			</div>
+		</div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">手机号码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="{$info['us_tel']}" style="width:20%" disabled>
+            </div>`
+        </div>
+        
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">所属分类：</label>
+            <div class="formControls col-xs-8 col-sm-9"> 
+                <span class="select-box" style="width:20%">
+                    <select name="level" class="select">
+                        <option value="">选择</option>
+                        <option value="0" {if condition="$info['us_level_one'] eq 1"}disabled{/if}>体验用户{:cache('level')[0]['cal_money']}</option> 
+                        <option value="1" {if condition="$info['us_level_two'] eq 1"}disabled{/if}>基础用户{:cache('level')[1]['cal_money']}</option> 
+                        <option value="2" {if condition="$info['us_level_three'] eq 1"}disabled{/if}>初级用户{:cache('level')[2]['cal_money']}</option> 
+                        <option value="3" {if condition="$info['us_level_four'] eq 1"}disabled{/if}>中级用户{:cache('level')[3]['cal_money']}</option> 
+                        <option value="4" {if condition="$info['us_level_five'] eq 1"}disabled{/if}>高级用户{:cache('level')[4]['cal_money']}</option> 
+                        <option value="5" {if condition="$info['us_level_six'] eq 1"}disabled{/if}>特级用户{:cache('level')[5]['cal_money']}</option> 
+                    </select>
+                </span>
+            </div>
+        </div>
+        
+
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button onclick="return savePro();" class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 确认提交</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+{include file="public/_footer" /}
+
+<!--请在下方写此页面业务相关的脚本-->
+
+<script type="text/javascript">
+// $('.form input[name="us_level"][value=' + "{$info['us_level']}" + ']').attr("checked", true);
+function savePro(){
+    var level = $('select[name="level"]').val();
+    if(level==''){
+        layer.msg('请选择激活等级'); return false;
+    }
+    console.log(level);
+    var id = {$info.id};
+    $.post('{:url("level")}',{level:level,id:id}).success(function(data){
+    	layer.msg(data.msg);
+    	if(data.code){
+    		setTimeout(function(){
+    			location.href = '';
+    		},500);
+    	}
+    });
+    return false;
+}
+
+</script>
+</body>
+</html>

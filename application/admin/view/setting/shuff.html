@@ -1,0 +1,148 @@
+{include file="public/_meta"/}
+<title>图片展示</title>
+<link href="/static/admin/lib/lightbox2/2.8.1/css/lightbox.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <nav class="breadcrumb">
+    	<i class="Hui-iconfont">&#xe67f;</i> 后台 
+    	<span class="c-gray en">&gt;</span> 其他 
+    	<span class="c-gray en">&gt;</span> 轮播 
+		<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+	</nav>
+	<div class="page-container">
+		<div class="text-c">
+	<form class="Huiform" method="get" action="">
+		状态：
+		<span class="select-box inline">
+			<select name="on" class="select">
+				<option value="">全部</option> 
+				<option value="1">上架</option> 
+				<option value="0" style="color:red;">下架</option>
+			</select>
+		</span>
+		类型：
+		<span class="select-box inline">
+			<select name="type" class="select">
+				<option value="">--全部--</option>
+				<option value="1">-手机端</option>
+				<option value="2">-电脑端</option>
+			</select>
+		</span>
+		位置：
+		<span class="select-box inline">
+			<select name="place" class="select">
+				<option value="">--全部--</option>
+				<option value="0">-首页</option>
+			</select>
+		</span>
+		排序（降序）：
+		<span class="select-box inline">
+			<select name="order" class="select">
+				<option value="">--默认--</option>
+				<option value="type">-类型</option>
+				<option value="place">-位置</option>
+				<option value="sort">-前台</option>
+			</select>
+		</span>
+		<input type="text" class="input-text" style="width:150px" placeholder="图片名" id="" name="keywords" value="{$Request.get.keywords|default=''}">
+		<button type="submit" class="btn btn-success radius" name=""><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+		</form>
+	</div>
+		<div class="cl pd-5 bg-1 bk-gray mt-20"> 
+			<span class="l"> 
+				<a href="shuff_add" class="btn btn-primary radius">
+					<i class="Hui-iconfont">&#xe642;</i>上传</a> 
+			</span> 
+		</div>
+		<div class="portfolio-content">
+			<table class="table table-border  table-hover table-bg table-sort">
+			<thead>
+				<tr class="text-c">
+					<th>图片</th>
+					<th>名称</th>
+					<th>类型</th>
+					<th>位置</th>
+					<th>排序</th>
+					<th>状态</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				{volist name="list" id="vo"}
+					<tr class="text-c">
+						<td><img src="{$vo.shuff_pic}" onclick="chakan($(this).attr('src'))" style="width:2rem;" alt=""></td>
+						<td>{$vo.shuff_name}</td>
+						<td>
+							{if condition="$vo.shuff_type eq 0"}手机端{else/}电脑端{/if}
+						</td>
+						<td>{$vo.loca_text}</td>
+						<td>
+							{$vo.shuff_sort}
+						</td>
+						<td>
+							{if condition="$vo.shuff_status eq 0"}下架{/if}
+							{if condition="$vo.shuff_status eq 1"}上架{/if}
+						</td>
+						<td class="f-14 product-brand-manage">
+							<a style="text-decoration:none" onclick="create({$vo.id},'shuff_edit','修改轮播图')" title="修改轮播图">
+								<i class="Hui-iconfont">&#xe6df;</i>
+							</a>
+							<a style="text-decoration:none" onClick="del({$vo.id})" href="javascript:;" title="删除">
+								<i class="Hui-iconfont">&#xe6a6;</i>
+							</a>
+						</td>
+					</tr>
+				{/volist}
+			</tbody>
+		</table>	
+	       
+	    </div>
+		<div class="item" style="display:none">
+	        <div class="portfoliobox">
+	            <div class="picbox"><img onclick="xiaoshi({$vo.id})"></a>
+	            </div>
+	        </div>
+    	</div>
+	</div>
+    {include file="public/_footer"/}
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="/static/admin/lib/lightbox2/2.8.1/js/lightbox.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        $(".portfolio-area li").Huihover();
+        $('select[name="on"]').val({$Request.get.on});
+		$('select[name="type"]').val({$Request.get.type});
+		$('select[name="place"]').val({$Request.get.place});
+		$('select[name="order"]').val("{$Request.get.order}");
+    });
+    
+
+    function create(id,url,key){
+        var url = "{:url('"+url+"')}?id="+id;
+        creatIframe(url,key);
+    }
+
+    function del(data){
+	    layer.confirm('确定要删除么？', {
+	      btn: ['确定', '取消']
+	    }, function(index, layero){
+	        $.ajax({
+	            type: "post",
+	            url: "{:url('picDel')}",
+	            data: {id:data},
+	            success: function(data) {
+	                layer.msg(data.msg);
+	                if(data.code=='1'){
+	                    setTimeout(function(){
+	                        location.href = data.url;
+	                    },1000);
+	                }
+	            }
+	        });
+	    });
+	}
+    </script>
+</body>
+
+</html>

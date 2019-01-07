@@ -1,0 +1,111 @@
+{include file="public/_meta" /}
+<title></title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+</head>
+
+<body>
+     <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>用户管理 <span class="c-gray en">&gt;</span> 数据下载 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <article class="page-container">
+        <form class="form form-horizontal" id="form-admin-add">
+            <div class="row cl yincang">
+                <label class="form-label col-xs-4 col-sm-2">数据表：</label>
+                <div class="formControls col-xs-8 col-sm-9"> 
+                    <span class="select-box" style="width:150px;">
+                        <select name="table" class="select" onchange="xianshi($(this).val())">
+                            <option value="user">用户</option>
+                            <option value="order">订单</option>
+                        </select>
+                    </span> 
+                </div>
+            </div>
+            <div class="row cl user">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>数据字段：</label>
+                <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                    <div class="radio-box">
+                        <input name="status[]" type="checkbox" value="1">
+                        <label>账户名</label>
+                    </div>
+                    <div class="radio-box">
+                        <input name="status[]" type="checkbox" value="0">
+                        <label>真实姓名</label>
+                    </div>
+                    <div class="radio-box">
+                        <input name="status[]" type="checkbox" value="0">
+                        <label>手机号</label>
+                    </div>
+                    <div class="radio-box">
+                        <input name="status[]" type="checkbox" value="0">
+                        <label>购物币</label>
+                    </div>
+                    <div class="radio-box">
+                        <input name="status[]" type="checkbox" value="0">
+                        <label>佣金</label>
+                    </div>
+                     <div class="radio-box">
+                        <input name="status[]" type="checkbox" value="0">
+                        <label>注册时间</label>
+                    </div>
+                </div>
+            </div>
+           <div class="row cl yincang">
+                <label class="form-label col-xs-4 col-sm-2">用户状态：</label>
+                <div class="formControls col-xs-8 col-sm-9"> 
+                    <span class="select-box" style="width:150px;">
+                        <select name="table" class="select" onchange="xianshi($(this).val())">
+                            <option value="user">正常</option>
+                            <option value="order">禁用</option>
+                        </select>
+                    </span> 
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>长度：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" placeholder="0为所有" value="" name="ad_real_name" style="width:20%">
+                </div>
+            </div>
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                    <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;下载&nbsp;&nbsp;" onclick="return add()">
+                </div>
+            </div>
+        </form>
+    </article>
+    {include file="public/_footer"/}
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript">
+    function xianshi(data){
+        if(data == 'user'){
+            $('.user').show();
+            $('.order').hide();
+        }else{
+            $('.order').show();
+            $('.user').hide();
+        }
+        
+    }
+    $(function(){
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+        var roles = {$info.role_id|default="1"};
+        $('select[name="role_id"]').val(roles);
+    });
+    function add(){
+        $.post("{:url('add')}", $('form').serialize()).success(function(data) {
+            layer.msg(data.msg);
+            if (data.code) {
+                setTimeout(function() {
+                   location.href = '';
+                }, 500);
+            }
+        });
+        return false;
+    }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,142 @@
+{include file="public/_meta" /}
+<title></title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+</head>
+<body>
+	 <nav class="breadcrumb">
+        <i class="Hui-iconfont">&#xe67f;</i> 首页 
+        <span class="c-gray en">&gt;</span>新闻管理 
+        <span class="c-gray en">&gt;</span> 添加 
+        <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" >
+            <i class="Hui-iconfont">&#xe68f;</i>
+        </a>
+    </nav>
+	<article class="page-container">
+		<form class="form form-horizontal" id="form-admin-add">
+		<input type="text" hidden="hidden" name="us_id" class="us_id">
+		<div class="row cl">
+	        <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>选择类型：</label>
+	        <div class="formControls col-xs-8 col-sm-9"> 
+	            <span class="select-box" style="width:20%">
+	                <select name="me_type" onchange="change($(this).val())" class="select">
+	                    <option value="1">新闻公告</option>
+	                    <!-- <option value="4">入职礼包</option> -->
+	                </select>
+	            </span>
+	        </div>
+	    </div>
+	    <div class="row cl us" style="margin-top:30px;display:none;">
+	        <label class="form-label col-xs-4 col-sm-2">用户账号：</label>
+	        <div class="formControls col-xs-8 col-sm-9">
+	            <input type="text" class="input-text res" onkeyup="get_user($(this).val())" style="width:20%">
+	        </div>`
+	    </div>
+	    <div class="row cl us" style="margin-top:30px;display:none;">
+	        <label class="form-label col-xs-4 col-sm-2">手机号：</label>
+	        <div class="formControls col-xs-8 col-sm-9">
+	            <input type="text" class="input-text res us_tel" placeholder="自动显示" value="" style="width:20%" disabled>
+	        </div>`
+	    </div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>标题：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" name="me_title">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>简介：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" name="me_intro">
+			</div>
+		</div>
+		<div class="row cl">
+	        <label class="form-label col-xs-4 col-sm-2">内容：</label>
+	        <div class="formControls col-xs-8 col-sm-9">
+	            <textarea id="editor" type="text/plain" style="width:100%;height:400px;" name="me_content" >
+	            </textarea>
+	        </div>
+	    </div>
+		<!-- <div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>内容：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<textarea name="content" cols="150" rows="20"></textarea>
+			</div>
+		</div> -->
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" onclick="return add()">
+			</div>
+		</div>
+		</form>
+	</article>
+
+{include file="public/_footer"/}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="/static/admin/lib/ueditor/1.4.3/ueditor.config.js"></script>
+<script type="text/javascript" src="/static/admin/lib/ueditor/1.4.3/ueditor.all.min.js"></script>
+<script type="text/javascript" src="/static/admin/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript">
+//     $(function() {
+//         var ue = UE.getEditor('editor');
+        
+//         $('.skin-minimal input').iCheck({
+//             checkboxClass: 'icheckbox-blue',
+//             radioClass: 'iradio-blue',
+//             increaseArea: '20%'
+//         }); 
+// <script type="text/javascript">
+$(function(){
+	var ue = UE.getEditor('editor');
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+	
+});
+
+function change(dd){
+	if(dd==1){
+		$('.us').hide();
+	}else{
+		$('.us').show();
+	}
+}
+function get_user(dd){
+	$.ajax({
+		type:"post",
+		url:"get_user",
+		data:{us_account:dd},
+		success:function(da){
+			if(da.code){
+				$('.us_tel').val(da.us_tel);
+				$('.us_id').val(da.us_id);
+			}else{
+				$('.us_tel').val('');
+				$('.us_id').val('');
+			}
+		}
+	})
+}
+
+function add(){
+	$.post("{:url('add')}",$('form').serialize()).success(function(data){
+		layer.msg(data.msg);
+		if(data.code){
+			setTimeout(function(){
+				location.href='';
+			},1000);
+			
+		}
+	});
+	return false;
+}
+
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

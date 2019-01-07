@@ -1,0 +1,115 @@
+{include file="public/_meta" /}
+<title></title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>财务管理 <span class="c-gray en">&gt;</span> 我的财务<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+    <div class="text-c">
+    <form class="Huiform" method="get" action="">
+        类型：
+        <span class="select-box inline">
+        <select name="type" class="select">
+            <option value="">全部</option>
+            <option value="1">店长兑换</option>
+            <!-- <option value="2">兑换未通过</option> -->
+            <!-- <option value="3">充值通过</option> -->
+            <option value="4">会员充值</option>
+            <!-- <option value="5">会员转出</option> -->
+            <option value="6">录入会员</option>
+        </select>
+        </span>
+        日期范围：
+        <input type="text" class="input-text Wdate" name="start" id="countTimestart" onfocus="selecttime(1)" value="{$Request.get.start|default=''}" size="17" class="date" readonly style="width:140px;"> 
+        - 
+        <input type="text" class="input-text Wdate" name="end" id="countTimeend" onfocus="selecttime(2)" value="{$Request.get.end|default=''}" size="17"  class="date" readonly style="width:140px;">
+        <button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+    </form>
+    </div>
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+         <span class="l">金额共计：<strong>{$num}</strong></span> </div>
+        <span class="l">共计：<strong>{$num}</strong></span><span class="r">共有数据：<strong>{$list->total()}</strong> 条</span> </div>
+    <div class="mt-20">
+    <table class="table table-border  table-hover table-bg table-sort">
+        <thead>
+            <tr class="text-c">
+                <th>ID</th>
+                <th>金额</th>
+                <th>店长</th>
+                <th>种类</th>
+                <th>时间</th> 
+            </tr>
+        </thead>
+        <tbody>
+            {volist name="list" id="vo" key="k"}
+                <tr class="text-c">
+                    <td>{$vo.Id}</td>
+                    <td>{$vo.money}</td>
+                    <td>{$vo.aid_text}</td>
+                    <td>{$vo.note}</td>
+                    <td>{$vo.add_time}</td>
+                </tr>
+            {/volist}
+        </tbody>
+    </table>
+        <div class="pages" style="margin:20px;float: right; ">{$list->render()}</div>
+    </div>
+</div>
+{include file="public/_footer" /}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/static/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script> 
+<script type="text/javascript">
+$('select[name="status"]').val({$Request.get.status});
+function selecttime(flag){
+    if(flag==1){
+        var endTime = $("#countTimeend").val();
+        if(endTime != ""){
+            WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',maxDate:endTime})}else{
+            WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})}
+    }else{
+        var startTime = $("#countTimestart").val();
+        if(startTime != ""){
+            WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',minDate:startTime})}else{
+            WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})}
+    }
+ }
+
+function showDetail(id){
+    var url = "{:url('Order/orderDetail')}?id="+id;
+    layer_show('订单详情',url);
+}
+
+function optOrder(obj,id,type){
+    // 发货
+    if(type){
+        $.post("{:url('Order/optOrder')}",{id:id,type:type}).success(function(data){
+            layer.msg(data.msg);
+            if(data.code){
+                $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">发货中</span>');
+                $(obj).remove();
+            }
+        });
+    }
+}
+function del(data){
+    layer.confirm('确定要取消该订单么？', {
+      btn: ['确定', '取消'] //可以无限个按钮
+    }, function(index, layero){
+        $.ajax({
+            type:"post",
+            url:"{:url('order_del')}",
+            data:{id:data},
+            success:function(data){
+                console.log(data);
+                layer.msg(data.msg);
+                if(data.code){
+                    setTimeout(function(){
+                        location.href = data.url;
+                    },1000);
+                }
+            }
+        })
+    });
+}
+</script> 
+</body>
+</html>

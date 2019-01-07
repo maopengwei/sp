@@ -1,0 +1,287 @@
+{include file="public/_meta" /}
+<title></title>
+<style>
+	.Hui-iconfont{
+		margin:0 2px;
+		font-size:15px;
+	}
+</style>
+</head>
+<body>
+<nav class="breadcrumb">
+	<i class="Hui-iconfont">&#xe67f;</i> 首页 
+	<span class="c-gray en">&gt;</span>用户管理 
+	<span class="c-gray en">&gt;</span> 会员列表 
+	<a class="btn btn-success radius r" style="margin-left:2px" href="javascript:location.replace(location.href);" title="刷新" >
+		<i class="Hui-iconfont">&#xe68f;</i>
+	</a>
+</nav>
+<div class="page-container">
+	<div class="text-c">
+		<form class="Huiform" method="get" action="">
+			<!-- 用户状态：
+			<span class="select-box inline">
+				<select name="status" class="select">
+					<option value="">全部</option> 
+					<option value="1">正常</option> 
+					<option value="0" style="color:red;">被禁用</option>
+				</select>
+			</span> -->
+			是否区域代理：
+			<span class="select-box inline">
+				<select name="agency" class="select">
+					<option value="">全部</option> 
+					<option value="1">区代</option> 
+					<option value="0">会员</option>
+				</select>
+			</span>
+			身份状态：
+			<span class="select-box inline">
+				<select name="us_zt" class="select">
+					<option value="">全部</option> 
+					<option value="0">未选厂</option> 
+					<option value="1">未面试</option> 
+					<option value="2">未入职</option> 
+					<option value="3">未满工</option> 
+					<option value="4">已满工</option> 
+				</select>
+			</span>
+			<input type="text" class="input-text" style="width:150px" placeholder="姓名、编号、手机号" id="" name="keywords" value="{$Request.get.keywords|default=''}">
+			<button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+		</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="l" style="margin-right:1rem">
+			<a href="javascript:;" onclick="create(0,'add','添加用户')" class="btn btn-primary radius">
+			<i class="Hui-iconfont">&#xe600;</i> 用户</a>
+		</span>
+		<span class="l" style="margin-right:1rem">
+			<a href="javascript:;" onclick="create(0,'agency','添加区代理')" class="btn btn-primary radius">
+			<i class="Hui-iconfont">&#xe600;</i> 区代理</a>
+		</span>
+		<span class="r">共有数据：<strong>{$list->total()}</strong> 条</span>
+	</div>
+	<div class="mt-20">
+		<table class="table table-border  table-hover table-bg table-sort">
+			<thead>
+				<tr class="text-c">				
+					<th>账户</th>
+					<th>父账户</th>
+					<th>赏金</th>
+					<th>相关</th>
+					<th>身份状态</th>
+					<th>添加时间</th>
+				</tr>
+			</thead>
+			<tbody>
+				{volist name='list' id="vo"}
+					<tr class="text-c">
+						<td>
+							<a onclick="member_show('会员信息','kan?id={$vo.id}','500','500')">
+								{$vo.us_account}
+							</a> | 
+							{$vo.us_tel} |
+							{$vo.us_real_name} |
+							{$vo.us_nick}
+						</td>
+						<td>
+							<a onclick="member_show('父账号','kan?id={$vo.us_pid}','500','500')">
+									{$vo.ptel}
+							</a>
+						</td>
+						<td>{$vo.us_wal}</td>					
+						<td> 
+							<a onclick="create('{$vo.id}','edit','编辑')">编辑</a> |
+							<a onclick="creacrea('{$vo.id}')">团队</a> |
+							<a onclick="create('{$vo.id}','song','赠送')"> 赠送</a> |
+							<a onclick="create('{$vo.id}','ru','入职记录')"> 入职记录</a> |
+							{if condition="$vo.us_is_agency eq 1"}
+							<a onclick="create('{$vo.id}','agen','区代')"> 区代</a> |
+							{/if}
+							{if condition="$vo.us_is_shen eq 0"}
+							<a onclick="shen('{$vo.id}',1,'审核通过')"> 审核通过</a> |
+							<a onclick="shen('{$vo.id}',2,'审核驳回')"> 审核驳回</a> |
+							{/if}
+							<a onclick="del('{$vo.id}')"> 删除</a>
+						</td>
+						<td>
+							{$vo.zt_text} | {$vo.status_text} | {$vo.level_text} |{$vo.agency_text} |
+							{if condition="$vo.us_is_shen eq 0"}
+								身份认证未审核
+							{elseif condition="$vo.us_is_shen eq 1"}
+								身份认证已通过
+							{else condition="$vo.us_is_shen eq 0"}
+								身份认证被驳回
+							{/if}
+						</td>					
+						<td>{$vo.us_add_time}</td>								
+					</tr>
+				{/volist}
+			</tbody>
+		</table>
+		<div class="pages" style="margin:20px;float: right; ">{$list|raw}</div>
+	</div>
+</div>
+{include file="public/_footer" /}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+
+$(function(){
+	$('select[name="us_status"]').val('{$Request.get.us_status}');
+	$('select[name="us_is_jing"]').val('{$Request.get.us_is_jing}');
+})	
+
+
+/*用户-查看*/
+function member_show(title,url,w,h){
+	layer_show(title,url,w,h);
+}
+
+//全选
+var storage=window.localStorage;
+var c = localStorage.getItem('a');
+if(c){
+	var a = c.split(",");
+}else{
+	var a =[]; 
+}
+
+if(a instanceof Array){
+	$('.duo').each(function(){
+		if( a.indexOf(this.value) >-1 ){
+			$(this).attr('checked',true);
+		}
+	});
+}else{
+	a = [];
+}
+
+function save(data) {
+    
+	var b = a.indexOf(data);
+	if( b >-1 ){
+		a.splice(b,1);
+	}else{
+		a.push(data);
+	}
+    storage.a=a;
+}
+
+function create(id,url,key){
+	var url = "{:url('"+url+"')}?id="+id;
+	creatIframe(url,key);
+}
+function creacrea(id){
+	var url = "{:url('tupu')}?id="+id+"&type=1";
+	creatIframe(url,'节点图');
+}
+/*------------------更改状态*/
+function change(id,value,key){
+	layer.confirm('确定要更改么？', {
+	      btn: ['确定', '取消']
+	    }, function(index, layero){
+	        $.ajax({
+	            type: "post",
+	            url: "{:url('index')}",
+	            data: {id:id,value:value,key:key},
+	            success: function(data) {
+	             	if(data.code){
+	             		location.href = 'tupu';
+	             	}
+	            }
+	        });
+	    });
+}
+
+/*------------------进入图谱*/
+function tupu(datt){
+	$.ajax({
+        type: "get",
+        url: "{:url('is_jing')}",
+        data: {id:datt},
+        success: function(data) {
+            if(data.code==1){
+                setTimeout(function(){
+                    create(datt,'tupu','进入节点图')
+                },1000);
+            }else{
+            	layer.msg(data.msg);
+            }
+        }
+    });
+}
+
+/*------------------下载*/
+function downdo(){
+	var url = window.location.href;
+	$.ajax({
+		type:'get',
+		url:url,
+		data:{a:1},
+		success:function(data){
+			window.location.href = data;
+		}
+	})
+}
+
+/*------------------删除*/
+function del(id){
+    layer.confirm('确定要删除么？', {
+      btn: ['确定', '取消']
+    }, function(index, layero){
+        $.ajax({
+            type: "post",
+            url: "{:url('del')}",
+            data: {id:id},
+            success: function(data) {
+                layer.msg(data.msg);
+                if(data.code==1){
+                    setTimeout(function(){
+                        location.href = data.url;
+                    },1000);
+                }
+            }
+        });
+    });
+}
+
+/*------------------删除*/
+function shen(id,us_is_shen,key){
+    layer.confirm('确定要'+key+'么？', {
+      btn: ['确定', '取消']
+    }, function(index, layero){
+        $.ajax({
+            type: "post",
+            url: "{:url('shen')}",
+            data: {id:id,us_is_shen:us_is_shen},
+            success: function(data) {
+                layer.msg(data.msg);
+                if(data.code==1){
+                    setTimeout(function(){
+                        location.href = data.url;
+                    },1000);
+                }
+            }
+        });
+    });
+}
+
+/*------------------区代*/
+function agency(id){
+	var dd = localStorage.getItem('a');
+	var key = '选择区代';
+	var url = 'agency';
+	if(!dd){
+		layer.msg("请选择用户");
+	}
+	console.log(dd);
+    // console.log(chk_value);
+    layer.confirm('确定为这些人选择区代么？', {
+      btn: ['确定', '取消']
+    }, function(index, layero){
+         create(dd,url,key)
+    });
+}	
+</script> 
+</body>
+</html>

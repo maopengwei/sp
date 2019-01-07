@@ -1,0 +1,121 @@
+{include file="public/_meta" /}
+<link href="/static/admin/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>其他 <span class="c-gray en">&gt;</span> 添加轮播图 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<form class="form form-horizontal" id="form">
+        <input type="file" hidden="hidden" class="click_file" onchange="upload(this)">
+        
+		 <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">图片：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <div style="width:110px;height: 110px;position: relative;display: inline-block; ">
+                    <img src="/static/admin/img/add0.png" onclick="click_file()" class="logo" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;">
+                </div>
+            </div>
+        </div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">图片名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" name="shuff_name" class="input-text" style="width:20%">
+			</div>
+		</div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">链接地址：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="shuff_href" style="width:20%">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>展示端：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input name="shuff_type" type="radio" value="0" >
+                    <label for="sex-1">手机</label>
+                </div>
+                <div class="radio-box">
+                    <input name="shuff_type" type="radio" value="0"  >
+                    <label for="sex-2">电脑</label>
+                </div>
+            </div>
+        </div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button onclick="return eee();" class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 确认提交</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+{include file="public/_footer" /}
+
+<!--请在下方写此页面业务相关的脚本-->
+
+<script type="text/javascript">
+
+/*---------------上传图片*/ 
+    function click_file(){
+        $('.click_file').click();
+    }
+    var bbb;
+    function upload(dada){
+        if(!dada.value){
+            return;
+        }
+        var pattern = /(\.*.jpg$)|(\.*.png$)|(\.*.jpeg$)|(\.*.gif$)|(\.*.bmp$)/;
+        if (!pattern.test(dada.value)) {
+            layer.msg("系统仅支持jpg/jpeg/png/gif/bmp格式的照片！");
+            dada.focus();
+            $(dada).val("");
+            return false;
+        } else {
+            var path;
+            if (document.all)
+            {
+                dada.select();
+                path = document.selection.createRange().text;
+            }
+            else
+            {
+                path = URL.createObjectURL(dada.files[0]);
+            }
+            bbb = dada.files[0];
+            $('.logo').attr('src', path);
+        }
+    }
+
+
+    function eee(){
+        var data = new FormData(document.getElementById('form')); //只有他能
+        if(bbb){
+            console.log(bbb);
+            data.append('file', bbb);
+        }else{
+            layer.msg('请上传图片');
+            return false;
+        }
+        var index = layer.load(1, { shade: false }); //0代表加载的风格，支持0-2
+        $.ajax({
+            url: '{:url("shuff_add")}',
+            type: 'post',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                layer.msg(data.msg);
+                if (data.code) {
+                    setTimeout(function(){
+                        location.href = '';
+                    },500); 
+                }
+                layer.close(index);
+            },
+        });
+        return false;
+    }
+
+</script>
+</body>
+</html>
